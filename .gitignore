@@ -1,0 +1,11 @@
+node_modules
+
+# Playwright
+playwright-report/
+test-results/
+.playwright/
+
+# Environment files
+server/.env
+server/data/*.db
+

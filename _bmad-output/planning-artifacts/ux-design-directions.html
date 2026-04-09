@@ -1,676 +1,764 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Todo App — Design Directions</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sintony:wght@400;700&display=swap" rel="stylesheet" />
-  <style>
-    /* ── Reset ────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App — Design Directions</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sintony:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ── Reset ────────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    /* ── Page shell ───────────────────────────────────── */
-    body {
-      font-family: 'Sintony', 'Inter', system-ui, sans-serif;
-      background: #f1f5f9;
-      color: #0f172a;
-      padding: 40px 20px 80px;
-    }
+      /* ── Page shell ───────────────────────────────────── */
+      body {
+        font-family: 'Sintony', 'Inter', system-ui, sans-serif;
+        background: #f1f5f9;
+        color: #0f172a;
+        padding: 40px 20px 80px;
+      }
 
-    h1.page-title {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: #64748b;
-      text-align: center;
-      margin-bottom: 8px;
-    }
-    p.page-sub {
-      font-size: 13px;
-      color: #94a3b8;
-      text-align: center;
-      margin-bottom: 48px;
-    }
+      h1.page-title {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #64748b;
+        text-align: center;
+        margin-bottom: 8px;
+      }
+      p.page-sub {
+        font-size: 13px;
+        color: #94a3b8;
+        text-align: center;
+        margin-bottom: 48px;
+      }
 
-    /* ── Direction grid ───────────────────────────────── */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 40px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+      /* ── Direction grid ───────────────────────────────── */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
 
-    .direction {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      overflow: hidden;
-    }
+      .direction {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        overflow: hidden;
+      }
 
-    .direction-label {
-      padding: 14px 20px;
-      border-bottom: 1px solid #e2e8f0;
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-    }
-    .direction-label strong {
-      font-size: 13px;
-      font-weight: 700;
-      color: #0f172a;
-    }
-    .direction-label span {
-      font-size: 12px;
-      color: #94a3b8;
-    }
+      .direction-label {
+        padding: 14px 20px;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+      }
+      .direction-label strong {
+        font-size: 13px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+      .direction-label span {
+        font-size: 12px;
+        color: #94a3b8;
+      }
 
-    /* ── App mockup frame ─────────────────────────────── */
-    .mockup {
-      padding: 32px 24px 40px;
-    }
+      /* ── App mockup frame ─────────────────────────────── */
+      .mockup {
+        padding: 32px 24px 40px;
+      }
 
-    /* ─────────────────────────────────────────────────── */
-    /* DIRECTION A — "Featherlight"                        */
-    /* Minimal chrome, wide open spacing, text dominates  */
-    /* ─────────────────────────────────────────────────── */
-    .dir-a .mockup { background: #f8fafc; }
+      /* ─────────────────────────────────────────────────── */
+      /* DIRECTION A — "Featherlight"                        */
+      /* Minimal chrome, wide open spacing, text dominates  */
+      /* ─────────────────────────────────────────────────── */
+      .dir-a .mockup {
+        background: #f8fafc;
+      }
 
-    .dir-a .app-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #0f172a;
-      letter-spacing: -.01em;
-      margin-bottom: 24px;
-    }
+      .dir-a .app-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: -0.01em;
+        margin-bottom: 24px;
+      }
 
-    .dir-a .input-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 28px;
-    }
-    .dir-a .input-field {
-      flex: 1;
-      padding: 10px 14px;
-      font-family: inherit;
-      font-size: 16px;
-      color: #0f172a;
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      outline: none;
-      transition: border-color .15s;
-    }
-    .dir-a .input-field::placeholder { color: #94a3b8; }
-    .dir-a .input-field:focus { border-color: #94a3b8; box-shadow: 0 0 0 3px #f1f5f9; }
-    .dir-a .add-btn {
-      padding: 10px 16px;
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 700;
-      color: #fff;
-      background: #334155;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .dir-a .add-btn:hover { background: #1e293b; }
+      .dir-a .input-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 28px;
+      }
+      .dir-a .input-field {
+        flex: 1;
+        padding: 10px 14px;
+        font-family: inherit;
+        font-size: 16px;
+        color: #0f172a;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      .dir-a .input-field::placeholder {
+        color: #94a3b8;
+      }
+      .dir-a .input-field:focus {
+        border-color: #94a3b8;
+        box-shadow: 0 0 0 3px #f1f5f9;
+      }
+      .dir-a .add-btn {
+        padding: 10px 16px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        color: #fff;
+        background: #334155;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      .dir-a .add-btn:hover {
+        background: #1e293b;
+      }
 
-    .dir-a .divider { height: 1px; background: #e2e8f0; margin-bottom: 20px; }
+      .dir-a .divider {
+        height: 1px;
+        background: #e2e8f0;
+        margin-bottom: 20px;
+      }
 
-    .dir-a .todo-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid #f1f5f9;
-    }
-    .dir-a .todo-item:last-child { border-bottom: none; }
+      .dir-a .todo-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f5f9;
+      }
+      .dir-a .todo-item:last-child {
+        border-bottom: none;
+      }
 
-    .dir-a .checkbox {
-      width: 18px; height: 18px;
-      border: 1.5px solid #cbd5e1;
-      border-radius: 4px;
-      flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: border-color .15s, background .15s;
-    }
-    .dir-a .checkbox.checked {
-      background: #334155;
-      border-color: #334155;
-    }
-    .dir-a .checkbox.checked::after {
-      content: '';
-      width: 10px; height: 6px;
-      border-left: 2px solid #fff;
-      border-bottom: 2px solid #fff;
-      transform: rotate(-45deg) translateY(-1px);
-      display: block;
-    }
+      .dir-a .checkbox {
+        width: 18px;
+        height: 18px;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 4px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          background 0.15s;
+      }
+      .dir-a .checkbox.checked {
+        background: #334155;
+        border-color: #334155;
+      }
+      .dir-a .checkbox.checked::after {
+        content: '';
+        width: 10px;
+        height: 6px;
+        border-left: 2px solid #fff;
+        border-bottom: 2px solid #fff;
+        transform: rotate(-45deg) translateY(-1px);
+        display: block;
+      }
 
-    .dir-a .todo-text {
-      flex: 1;
-      font-size: 16px;
-      color: #0f172a;
-      line-height: 1.5;
-    }
-    .dir-a .todo-text.done {
-      text-decoration: line-through;
-      color: #94a3b8;
-      opacity: .6;
-    }
+      .dir-a .todo-text {
+        flex: 1;
+        font-size: 16px;
+        color: #0f172a;
+        line-height: 1.5;
+      }
+      .dir-a .todo-text.done {
+        text-decoration: line-through;
+        color: #94a3b8;
+        opacity: 0.6;
+      }
 
-    .dir-a .delete-btn {
-      opacity: 0;
-      font-size: 12px;
-      color: #94a3b8;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px;
-      transition: opacity .15s, color .15s;
-    }
-    .dir-a .todo-item:hover .delete-btn { opacity: 1; }
-    .dir-a .delete-btn:hover { color: #e11d48; }
+      .dir-a .delete-btn {
+        opacity: 0;
+        font-size: 12px;
+        color: #94a3b8;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        transition:
+          opacity 0.15s,
+          color 0.15s;
+      }
+      .dir-a .todo-item:hover .delete-btn {
+        opacity: 1;
+      }
+      .dir-a .delete-btn:hover {
+        color: #e11d48;
+      }
 
-    .dir-a .empty-state {
-      padding: 40px 0;
-      text-align: center;
-      color: #94a3b8;
-      font-size: 14px;
-    }
+      .dir-a .empty-state {
+        padding: 40px 0;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 14px;
+      }
 
-    /* ─────────────────────────────────────────────────── */
-    /* DIRECTION B — "Structured"                          */
-    /* Subtle cards per item, stronger visual separation   */
-    /* ─────────────────────────────────────────────────── */
-    .dir-b .mockup { background: #f8fafc; }
+      /* ─────────────────────────────────────────────────── */
+      /* DIRECTION B — "Structured"                          */
+      /* Subtle cards per item, stronger visual separation   */
+      /* ─────────────────────────────────────────────────── */
+      .dir-b .mockup {
+        background: #f8fafc;
+      }
 
-    .dir-b .app-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #0f172a;
-      margin-bottom: 20px;
-    }
+      .dir-b .app-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 20px;
+      }
 
-    .dir-b .input-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 6px 6px 6px 14px;
-    }
-    .dir-b .input-field {
-      flex: 1;
-      font-family: inherit;
-      font-size: 16px;
-      color: #0f172a;
-      background: transparent;
-      border: none;
-      outline: none;
-    }
-    .dir-b .input-field::placeholder { color: #94a3b8; }
-    .dir-b .add-btn {
-      padding: 8px 14px;
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 700;
-      color: #fff;
-      background: #334155;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .dir-b .add-btn:hover { background: #1e293b; }
+      .dir-b .input-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 24px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 6px 6px 6px 14px;
+      }
+      .dir-b .input-field {
+        flex: 1;
+        font-family: inherit;
+        font-size: 16px;
+        color: #0f172a;
+        background: transparent;
+        border: none;
+        outline: none;
+      }
+      .dir-b .input-field::placeholder {
+        color: #94a3b8;
+      }
+      .dir-b .add-btn {
+        padding: 8px 14px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        color: #fff;
+        background: #334155;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .dir-b .add-btn:hover {
+        background: #1e293b;
+      }
 
-    .dir-b .list-header {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: #94a3b8;
-      margin-bottom: 10px;
-    }
+      .dir-b .list-header {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #94a3b8;
+        margin-bottom: 10px;
+      }
 
-    .dir-b .todo-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      margin-bottom: 6px;
-      transition: border-color .15s;
-    }
-    .dir-b .todo-item:hover { border-color: #cbd5e1; }
+      .dir-b .todo-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        margin-bottom: 6px;
+        transition: border-color 0.15s;
+      }
+      .dir-b .todo-item:hover {
+        border-color: #cbd5e1;
+      }
 
-    .dir-b .checkbox {
-      width: 18px; height: 18px;
-      border: 1.5px solid #cbd5e1;
-      border-radius: 4px;
-      flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: border-color .15s, background .15s;
-    }
-    .dir-b .checkbox.checked {
-      background: #334155;
-      border-color: #334155;
-    }
-    .dir-b .checkbox.checked::after {
-      content: '';
-      width: 10px; height: 6px;
-      border-left: 2px solid #fff;
-      border-bottom: 2px solid #fff;
-      transform: rotate(-45deg) translateY(-1px);
-      display: block;
-    }
+      .dir-b .checkbox {
+        width: 18px;
+        height: 18px;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 4px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          background 0.15s;
+      }
+      .dir-b .checkbox.checked {
+        background: #334155;
+        border-color: #334155;
+      }
+      .dir-b .checkbox.checked::after {
+        content: '';
+        width: 10px;
+        height: 6px;
+        border-left: 2px solid #fff;
+        border-bottom: 2px solid #fff;
+        transform: rotate(-45deg) translateY(-1px);
+        display: block;
+      }
 
-    .dir-b .todo-text {
-      flex: 1;
-      font-size: 15px;
-      color: #0f172a;
-    }
-    .dir-b .todo-text.done {
-      text-decoration: line-through;
-      color: #94a3b8;
-      opacity: .6;
-    }
+      .dir-b .todo-text {
+        flex: 1;
+        font-size: 15px;
+        color: #0f172a;
+      }
+      .dir-b .todo-text.done {
+        text-decoration: line-through;
+        color: #94a3b8;
+        opacity: 0.6;
+      }
 
-    .dir-b .delete-btn {
-      opacity: 0;
-      font-size: 12px;
-      color: #94a3b8;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px;
-      transition: opacity .15s, color .15s;
-    }
-    .dir-b .todo-item:hover .delete-btn { opacity: 1; }
-    .dir-b .delete-btn:hover { color: #e11d48; }
+      .dir-b .delete-btn {
+        opacity: 0;
+        font-size: 12px;
+        color: #94a3b8;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        transition:
+          opacity 0.15s,
+          color 0.15s;
+      }
+      .dir-b .todo-item:hover .delete-btn {
+        opacity: 1;
+      }
+      .dir-b .delete-btn:hover {
+        color: #e11d48;
+      }
 
-    .dir-b .empty-state {
-      padding: 32px 0;
-      text-align: center;
-      color: #94a3b8;
-      font-size: 14px;
-      background: #fff;
-      border: 1px dashed #e2e8f0;
-      border-radius: 6px;
-    }
+      .dir-b .empty-state {
+        padding: 32px 0;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 14px;
+        background: #fff;
+        border: 1px dashed #e2e8f0;
+        border-radius: 6px;
+      }
 
-    /* ─────────────────────────────────────────────────── */
-    /* DIRECTION C — "Focused"                             */
-    /* Ultra-minimal, no visible borders on list,          */
-    /* dividers only, maximum content-to-chrome ratio      */
-    /* ─────────────────────────────────────────────────── */
-    .dir-c .mockup { background: #fff; padding: 40px 28px 48px; }
+      /* ─────────────────────────────────────────────────── */
+      /* DIRECTION C — "Focused"                             */
+      /* Ultra-minimal, no visible borders on list,          */
+      /* dividers only, maximum content-to-chrome ratio      */
+      /* ─────────────────────────────────────────────────── */
+      .dir-c .mockup {
+        background: #fff;
+        padding: 40px 28px 48px;
+      }
 
-    .dir-c .app-header {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      margin-bottom: 28px;
-    }
-    .dir-c .app-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: #334155;
-      letter-spacing: -.01em;
-    }
-    .dir-c .task-count {
-      font-size: 12px;
-      color: #94a3b8;
-    }
+      .dir-c .app-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 28px;
+      }
+      .dir-c .app-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #334155;
+        letter-spacing: -0.01em;
+      }
+      .dir-c .task-count {
+        font-size: 12px;
+        color: #94a3b8;
+      }
 
-    .dir-c .input-field {
-      width: 100%;
-      padding: 0 0 14px 0;
-      font-family: inherit;
-      font-size: 16px;
-      color: #0f172a;
-      background: transparent;
-      border: none;
-      border-bottom: 2px solid #e2e8f0;
-      border-radius: 0;
-      outline: none;
-      margin-bottom: 28px;
-      transition: border-color .2s;
-    }
-    .dir-c .input-field::placeholder { color: #cbd5e1; }
-    .dir-c .input-field:focus { border-bottom-color: #334155; }
+      .dir-c .input-field {
+        width: 100%;
+        padding: 0 0 14px 0;
+        font-family: inherit;
+        font-size: 16px;
+        color: #0f172a;
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid #e2e8f0;
+        border-radius: 0;
+        outline: none;
+        margin-bottom: 28px;
+        transition: border-color 0.2s;
+      }
+      .dir-c .input-field::placeholder {
+        color: #cbd5e1;
+      }
+      .dir-c .input-field:focus {
+        border-bottom-color: #334155;
+      }
 
-    .dir-c .todo-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 13px 0;
-      border-bottom: 1px solid #f1f5f9;
-    }
-    .dir-c .todo-item:first-child { border-top: 1px solid #f1f5f9; }
+      .dir-c .todo-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 13px 0;
+        border-bottom: 1px solid #f1f5f9;
+      }
+      .dir-c .todo-item:first-child {
+        border-top: 1px solid #f1f5f9;
+      }
 
-    .dir-c .checkbox {
-      width: 16px; height: 16px;
-      border: 1.5px solid #cbd5e1;
-      border-radius: 50%;
-      flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: border-color .15s, background .15s;
-    }
-    .dir-c .checkbox.checked {
-      background: #334155;
-      border-color: #334155;
-    }
-    .dir-c .checkbox.checked::after {
-      content: '';
-      width: 8px; height: 5px;
-      border-left: 1.5px solid #fff;
-      border-bottom: 1.5px solid #fff;
-      transform: rotate(-45deg) translateY(-1px);
-      display: block;
-    }
+      .dir-c .checkbox {
+        width: 16px;
+        height: 16px;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          background 0.15s;
+      }
+      .dir-c .checkbox.checked {
+        background: #334155;
+        border-color: #334155;
+      }
+      .dir-c .checkbox.checked::after {
+        content: '';
+        width: 8px;
+        height: 5px;
+        border-left: 1.5px solid #fff;
+        border-bottom: 1.5px solid #fff;
+        transform: rotate(-45deg) translateY(-1px);
+        display: block;
+      }
 
-    .dir-c .todo-text {
-      flex: 1;
-      font-size: 15px;
-      color: #1e293b;
-      line-height: 1.5;
-    }
-    .dir-c .todo-text.done {
-      text-decoration: line-through;
-      color: #94a3b8;
-      opacity: .55;
-    }
+      .dir-c .todo-text {
+        flex: 1;
+        font-size: 15px;
+        color: #1e293b;
+        line-height: 1.5;
+      }
+      .dir-c .todo-text.done {
+        text-decoration: line-through;
+        color: #94a3b8;
+        opacity: 0.55;
+      }
 
-    .dir-c .delete-btn {
-      opacity: 0;
-      font-size: 11px;
-      color: #cbd5e1;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px;
-      transition: opacity .15s, color .15s;
-    }
-    .dir-c .todo-item:hover .delete-btn { opacity: 1; }
-    .dir-c .delete-btn:hover { color: #e11d48; }
+      .dir-c .delete-btn {
+        opacity: 0;
+        font-size: 11px;
+        color: #cbd5e1;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        transition:
+          opacity 0.15s,
+          color 0.15s;
+      }
+      .dir-c .todo-item:hover .delete-btn {
+        opacity: 1;
+      }
+      .dir-c .delete-btn:hover {
+        color: #e11d48;
+      }
 
-    .dir-c .empty-state {
-      padding: 40px 0;
-      font-size: 14px;
-      color: #cbd5e1;
-    }
+      .dir-c .empty-state {
+        padding: 40px 0;
+        font-size: 14px;
+        color: #cbd5e1;
+      }
 
-    /* ── Error state demo ─────────────────────────────── */
-    .error-demo {
-      margin-top: 20px;
-      padding: 10px 14px;
-      background: #fff1f2;
-      border: 1px solid #fecdd3;
-      border-radius: 6px;
-      font-size: 13px;
-      color: #9f1239;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .error-dot {
-      width: 6px; height: 6px;
-      background: #e11d48;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
+      /* ── Error state demo ─────────────────────────────── */
+      .error-demo {
+        margin-top: 20px;
+        padding: 10px 14px;
+        background: #fff1f2;
+        border: 1px solid #fecdd3;
+        border-radius: 6px;
+        font-size: 13px;
+        color: #9f1239;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .error-dot {
+        width: 6px;
+        height: 6px;
+        background: #e11d48;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
 
-    /* ── Loading state demo ───────────────────────────── */
-    .skeleton {
-      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s infinite;
-      border-radius: 4px;
-    }
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
+      /* ── Loading state demo ───────────────────────────── */
+      .skeleton {
+        background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.4s infinite;
+        border-radius: 4px;
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
 
-    /* ── Notes beneath each direction ────────────────────*/
-    .direction-notes {
-      padding: 14px 20px;
-      border-top: 1px solid #f1f5f9;
-      background: #fafafa;
-    }
-    .direction-notes ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .direction-notes li {
-      font-size: 12px;
-      color: #64748b;
-      padding-left: 14px;
-      position: relative;
-    }
-    .direction-notes li::before {
-      content: '→';
-      position: absolute;
-      left: 0;
-      color: #cbd5e1;
-    }
+      /* ── Notes beneath each direction ────────────────────*/
+      .direction-notes {
+        padding: 14px 20px;
+        border-top: 1px solid #f1f5f9;
+        background: #fafafa;
+      }
+      .direction-notes ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .direction-notes li {
+        font-size: 12px;
+        color: #64748b;
+        padding-left: 14px;
+        position: relative;
+      }
+      .direction-notes li::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: #cbd5e1;
+      }
 
-    /* ── Selection callout ────────────────────────────── */
-    .callout {
-      max-width: 640px;
-      margin: 48px auto 0;
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 24px 28px;
-    }
-    .callout h2 {
-      font-size: 15px;
-      font-weight: 700;
-      color: #0f172a;
-      margin-bottom: 10px;
-    }
-    .callout p {
-      font-size: 13px;
-      color: #64748b;
-      line-height: 1.6;
-    }
-    .callout .options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 16px;
-    }
-    .callout .opt {
-      padding: 7px 16px;
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 700;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 6px;
-      background: #fff;
-      cursor: pointer;
-      color: #334155;
-      transition: border-color .15s, background .15s;
-    }
-    .callout .opt:hover { border-color: #334155; background: #f8fafc; }
-  </style>
-</head>
-<body>
+      /* ── Selection callout ────────────────────────────── */
+      .callout {
+        max-width: 640px;
+        margin: 48px auto 0;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 24px 28px;
+      }
+      .callout h2 {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 10px;
+      }
+      .callout p {
+        font-size: 13px;
+        color: #64748b;
+        line-height: 1.6;
+      }
+      .callout .options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 16px;
+      }
+      .callout .opt {
+        padding: 7px 16px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 6px;
+        background: #fff;
+        cursor: pointer;
+        color: #334155;
+        transition:
+          border-color 0.15s,
+          background 0.15s;
+      }
+      .callout .opt:hover {
+        border-color: #334155;
+        background: #f8fafc;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="page-title">Todo App — Design Directions</h1>
+    <p class="page-sub">Three visual directions. Same interactions, same tokens. Different feel.</p>
 
-  <h1 class="page-title">Todo App — Design Directions</h1>
-  <p class="page-sub">Three visual directions. Same interactions, same tokens. Different feel.</p>
+    <div class="grid">
+      <!-- ── Direction A: Featherlight ─────────────────── -->
+      <div class="direction dir-a">
+        <div class="direction-label">
+          <strong>A — Featherlight</strong>
+          <span>Open spacing · Line dividers · Unboxed items</span>
+        </div>
+        <div class="mockup">
+          <div class="app-title">My Tasks</div>
 
-  <div class="grid">
+          <div class="input-row">
+            <input class="input-field" type="text" placeholder="Add a task…" />
+            <button class="add-btn">Add</button>
+          </div>
 
-    <!-- ── Direction A: Featherlight ─────────────────── -->
-    <div class="direction dir-a">
-      <div class="direction-label">
-        <strong>A — Featherlight</strong>
-        <span>Open spacing · Line dividers · Unboxed items</span>
+          <div class="divider"></div>
+
+          <div class="todo-item">
+            <div class="checkbox"></div>
+            <span class="todo-text">Call the dentist</span>
+            <button class="delete-btn">✕</button>
+          </div>
+          <div class="todo-item">
+            <div class="checkbox"></div>
+            <span class="todo-text">Review pull request #42</span>
+            <button class="delete-btn">✕</button>
+          </div>
+          <div class="todo-item">
+            <div class="checkbox checked"></div>
+            <span class="todo-text done">Buy groceries</span>
+            <button class="delete-btn">✕</button>
+          </div>
+          <div class="todo-item">
+            <div class="checkbox"></div>
+            <span class="todo-text">Write architecture doc</span>
+            <button class="delete-btn">✕</button>
+          </div>
+
+          <!-- Error state example -->
+          <div class="error-demo">
+            <div class="error-dot"></div>
+            Couldn't save — check your connection.
+          </div>
+        </div>
+        <div class="direction-notes">
+          <ul>
+            <li>Maximum breathing room; feels like a clean notebook</li>
+            <li>Line dividers create rhythm without visual weight</li>
+            <li>Delete reveals on hover — zero clutter at rest</li>
+            <li>Best fit: Bear / Craft aesthetic</li>
+          </ul>
+        </div>
       </div>
-      <div class="mockup">
-        <div class="app-title">My Tasks</div>
 
-        <div class="input-row">
-          <input class="input-field" type="text" placeholder="Add a task…" />
-          <button class="add-btn">Add</button>
+      <!-- ── Direction B: Structured ───────────────────── -->
+      <div class="direction dir-b">
+        <div class="direction-label">
+          <strong>B — Structured</strong>
+          <span>Card items · Integrated input · Subtle depth</span>
         </div>
+        <div class="mockup">
+          <div class="app-title">My Tasks</div>
 
-        <div class="divider"></div>
+          <div class="input-row">
+            <input class="input-field" type="text" placeholder="Add a task…" />
+            <button class="add-btn">Add</button>
+          </div>
 
-        <div class="todo-item">
-          <div class="checkbox"></div>
-          <span class="todo-text">Call the dentist</span>
-          <button class="delete-btn">✕</button>
-        </div>
-        <div class="todo-item">
-          <div class="checkbox"></div>
-          <span class="todo-text">Review pull request #42</span>
-          <button class="delete-btn">✕</button>
-        </div>
-        <div class="todo-item">
-          <div class="checkbox checked"></div>
-          <span class="todo-text done">Buy groceries</span>
-          <button class="delete-btn">✕</button>
-        </div>
-        <div class="todo-item">
-          <div class="checkbox"></div>
-          <span class="todo-text">Write architecture doc</span>
-          <button class="delete-btn">✕</button>
-        </div>
+          <div class="list-header">Tasks</div>
 
-        <!-- Error state example -->
-        <div class="error-demo">
-          <div class="error-dot"></div>
-          Couldn't save — check your connection.
+          <div class="todo-item">
+            <div class="checkbox"></div>
+            <span class="todo-text">Call the dentist</span>
+            <button class="delete-btn">✕</button>
+          </div>
+          <div class="todo-item">
+            <div class="checkbox"></div>
+            <span class="todo-text">Review pull request #42</span>
+            <button class="delete-btn">✕</button>
+          </div>
+          <div class="todo-item">
+            <div class="checkbox checked"></div>
+            <span class="todo-text done">Buy groceries</span>
+            <button class="delete-btn">✕</button>
+          </div>
+          <div class="todo-item">
+            <div class="checkbox"></div>
+            <span class="todo-text">Write architecture doc</span>
+            <button class="delete-btn">✕</button>
+          </div>
+        </div>
+        <div class="direction-notes">
+          <ul>
+            <li>Cards give each task clear individual identity</li>
+            <li>Integrated input feels like part of the list</li>
+            <li>Slightly denser — fits more tasks in view</li>
+            <li>Best fit: Linear / Notion aesthetic</li>
+          </ul>
         </div>
       </div>
-      <div class="direction-notes">
-        <ul>
-          <li>Maximum breathing room; feels like a clean notebook</li>
-          <li>Line dividers create rhythm without visual weight</li>
-          <li>Delete reveals on hover — zero clutter at rest</li>
-          <li>Best fit: Bear / Craft aesthetic</li>
-        </ul>
+
+      <!-- ── Direction C: Focused ──────────────────────── -->
+      <div class="direction dir-c">
+        <div class="direction-label">
+          <strong>C — Focused</strong>
+          <span>White surface · Underline input · Circular checkbox</span>
+        </div>
+        <div class="mockup">
+          <div class="app-header">
+            <div class="app-title">Tasks</div>
+            <span class="task-count">4 remaining</span>
+          </div>
+
+          <input class="input-field" type="text" placeholder="What needs doing?" />
+
+          <div class="todo-item">
+            <div class="checkbox"></div>
+            <span class="todo-text">Call the dentist</span>
+            <button class="delete-btn">✕</button>
+          </div>
+          <div class="todo-item">
+            <div class="checkbox"></div>
+            <span class="todo-text">Review pull request #42</span>
+            <button class="delete-btn">✕</button>
+          </div>
+          <div class="todo-item">
+            <div class="checkbox checked"></div>
+            <span class="todo-text done">Buy groceries</span>
+            <button class="delete-btn">✕</button>
+          </div>
+          <div class="todo-item">
+            <div class="checkbox"></div>
+            <span class="todo-text">Write architecture doc</span>
+            <button class="delete-btn">✕</button>
+          </div>
+        </div>
+        <div class="direction-notes">
+          <ul>
+            <li>Pure white surface — maximum focus on content</li>
+            <li>Underline input feels editorial, not form-like</li>
+            <li>Circular checkbox adds subtle softness</li>
+            <li>Best fit: Apple Notes / minimal writing tool aesthetic</li>
+          </ul>
+        </div>
       </div>
     </div>
 
-    <!-- ── Direction B: Structured ───────────────────── -->
-    <div class="direction dir-b">
-      <div class="direction-label">
-        <strong>B — Structured</strong>
-        <span>Card items · Integrated input · Subtle depth</span>
-      </div>
-      <div class="mockup">
-        <div class="app-title">My Tasks</div>
-
-        <div class="input-row">
-          <input class="input-field" type="text" placeholder="Add a task…" />
-          <button class="add-btn">Add</button>
-        </div>
-
-        <div class="list-header">Tasks</div>
-
-        <div class="todo-item">
-          <div class="checkbox"></div>
-          <span class="todo-text">Call the dentist</span>
-          <button class="delete-btn">✕</button>
-        </div>
-        <div class="todo-item">
-          <div class="checkbox"></div>
-          <span class="todo-text">Review pull request #42</span>
-          <button class="delete-btn">✕</button>
-        </div>
-        <div class="todo-item">
-          <div class="checkbox checked"></div>
-          <span class="todo-text done">Buy groceries</span>
-          <button class="delete-btn">✕</button>
-        </div>
-        <div class="todo-item">
-          <div class="checkbox"></div>
-          <span class="todo-text">Write architecture doc</span>
-          <button class="delete-btn">✕</button>
-        </div>
-      </div>
-      <div class="direction-notes">
-        <ul>
-          <li>Cards give each task clear individual identity</li>
-          <li>Integrated input feels like part of the list</li>
-          <li>Slightly denser — fits more tasks in view</li>
-          <li>Best fit: Linear / Notion aesthetic</li>
-        </ul>
+    <!-- ── Selection prompt ───────────────────────────── -->
+    <div class="callout">
+      <h2>Which direction feels right?</h2>
+      <p>
+        All three use the same Sintony font, slate color tokens, and interaction patterns. The
+        difference is <em>surface treatment</em>: how list items are contained, how the input sits
+        in the page, and how much visual structure surrounds the content. You can also mix elements
+        — e.g. Direction A's spacing with Direction C's underline input.
+      </p>
+      <div class="options">
+        <button class="opt">A — Featherlight</button>
+        <button class="opt">B — Structured</button>
+        <button class="opt">C — Focused</button>
+        <button class="opt">Mix elements →</button>
       </div>
     </div>
-
-    <!-- ── Direction C: Focused ──────────────────────── -->
-    <div class="direction dir-c">
-      <div class="direction-label">
-        <strong>C — Focused</strong>
-        <span>White surface · Underline input · Circular checkbox</span>
-      </div>
-      <div class="mockup">
-        <div class="app-header">
-          <div class="app-title">Tasks</div>
-          <span class="task-count">4 remaining</span>
-        </div>
-
-        <input class="input-field" type="text" placeholder="What needs doing?" />
-
-        <div class="todo-item">
-          <div class="checkbox"></div>
-          <span class="todo-text">Call the dentist</span>
-          <button class="delete-btn">✕</button>
-        </div>
-        <div class="todo-item">
-          <div class="checkbox"></div>
-          <span class="todo-text">Review pull request #42</span>
-          <button class="delete-btn">✕</button>
-        </div>
-        <div class="todo-item">
-          <div class="checkbox checked"></div>
-          <span class="todo-text done">Buy groceries</span>
-          <button class="delete-btn">✕</button>
-        </div>
-        <div class="todo-item">
-          <div class="checkbox"></div>
-          <span class="todo-text">Write architecture doc</span>
-          <button class="delete-btn">✕</button>
-        </div>
-      </div>
-      <div class="direction-notes">
-        <ul>
-          <li>Pure white surface — maximum focus on content</li>
-          <li>Underline input feels editorial, not form-like</li>
-          <li>Circular checkbox adds subtle softness</li>
-          <li>Best fit: Apple Notes / minimal writing tool aesthetic</li>
-        </ul>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ── Selection prompt ───────────────────────────── -->
-  <div class="callout">
-    <h2>Which direction feels right?</h2>
-    <p>All three use the same Sintony font, slate color tokens, and interaction patterns. The difference is <em>surface treatment</em>: how list items are contained, how the input sits in the page, and how much visual structure surrounds the content. You can also mix elements — e.g. Direction A's spacing with Direction C's underline input.</p>
-    <div class="options">
-      <button class="opt">A — Featherlight</button>
-      <button class="opt">B — Structured</button>
-      <button class="opt">C — Focused</button>
-      <button class="opt">Mix elements →</button>
-    </div>
-  </div>
-
-</body>
+  </body>
 </html>

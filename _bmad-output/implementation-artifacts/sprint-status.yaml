@@ -1,5 +1,5 @@
 # generated: 2026-04-09
-# last_updated: 2026-04-10
+# last_updated: 2026-04-09
 # project: Todo App
 # project_key: NOKEY
 # tracking_system: file-system
@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-09
-last_updated: 2026-04-09
+last_updated: 2026-04-09-retro
 project: Todo App
 project_key: NOKEY
 tracking_system: file-system
@@ -43,14 +43,14 @@ story_location: _bmad-output/implementation-artifacts
 
 development_status:
   # Epic 1: Project Foundation & Working Backend API
-  epic-1: in-progress
-  1-1-monorepo-scaffold-and-shared-tooling: ready-for-dev
-  1-2-server-bootstrap-db-schema-and-health-endpoint: backlog
-  1-3-crud-api-endpoints-tests-and-postman-contract-collection: backlog
-  epic-1-retrospective: optional
+  epic-1: done
+  1-1-monorepo-scaffold-and-shared-tooling: done
+  1-2-server-bootstrap-db-schema-and-health-endpoint: done
+  1-3-crud-api-endpoints-tests-and-postman-contract-collection: done
+  epic-1-retrospective: done
 
   # Epic 2: Core Frontend Application
-  epic-2: backlog
+  epic-2: in-progress
   2-1-frontend-scaffold-design-system-and-component-shell: backlog
   2-2-todo-api-client-and-data-fetching-hook: backlog
   2-3-todolist-loading-empty-and-populated-states: backlog

@@ -1,5 +1,11 @@
 ---
-stepsCompleted: [step-01-validate-prerequisites, step-02-design-epics, step-03-create-stories, step-04-final-validation]
+stepsCompleted:
+  [
+    step-01-validate-prerequisites,
+    step-02-design-epics,
+    step-03-create-stories,
+    step-04-final-validation,
+  ]
 inputDocuments:
   - _bmad-output/planning-artifacts/prd.md
   - _bmad-output/planning-artifacts/architecture.md
@@ -96,7 +102,7 @@ NFR23: E2E tests cover all 7 defined full user journeys using Playwright
 - ARCH5: REST API base path `/api`; endpoints: `GET /api/todos`, `POST /api/todos`, `PATCH /api/todos/:id`, `DELETE /api/todos/:id`, `GET /health`; error shape always `{ message: string }`; success responses are direct (no envelope wrapper)
 - ARCH6: Dev-time: Vite proxy routes `/api/*` → `localhost:3000`; production: Nginx multi-stage build serves `/dist`, SPA fallback (`try_files $uri /index.html`), proxies API to backend service
 - ARCH7: Frontend server state managed exclusively by TanStack Query; optimistic UI for all mutations via `onMutate`/`onError`/`onSettled`; local UI state (input value, error banner) via plain `useState` only
-- ARCH8: Tech stack: React 19.x + Vite 6.x + TypeScript 5.x + Tailwind CSS 4.x + TanStack Query 5.x (frontend); Fastify 5.x + TypeScript 5.x + better-sqlite3 (backend)
+- ARCH8: Tech stack: React 19.x + Vite 8.x + TypeScript 5.x + Tailwind CSS 4.x + TanStack Query 5.x (frontend); Fastify 5.x + TypeScript 5.x + better-sqlite3 (backend)
 - ARCH9: Testing stack: Vitest 3.x + RTL 16.x (client); Jest 29.x + Supertest 7.x (server); Playwright 1.x (E2E); ESLint 9.x flat config + Prettier 3.x (shared)
 - ARCH10: Environment variables: `PORT=3000`, `DB_PATH=/app/data/todos.db`, `NODE_ENV=development|production|test`; Docker Compose mounts `./data:/app/data` for SQLite file persistence
 - ARCH11: Test placement — server: `server/src/__tests__/` with `.unit.test.ts` / `.integration.test.ts` suffixes; client: co-located next to component (e.g. `TodoItem.test.tsx`); E2E: `e2e/` at monorepo root
@@ -122,66 +128,71 @@ UX-DR15: Animation and transition specifications — new task fade-in: `opacity`
 
 ### FR Coverage Map
 
-| FR | Epic | Note |
-|---|---|---|
-| FR1 | Epic 2 | Create todo via UI |
-| FR2 | Epic 2 | View todo list via UI |
-| FR3 | Epic 2 | Toggle complete via UI |
-| FR4 | Epic 2 | Toggle incomplete via UI |
-| FR5 | Epic 2 | Delete todo via UI |
-| FR6 | Epic 1 | DB-backed persistence (server) |
-| FR7 | Epic 2 | Loading state on list fetch |
-| FR8 | Epic 2 | Empty state |
-| FR9 | Epic 2 | Visual distinction completed vs active |
-| FR10 | Epic 2 | Consistent newest-first ordering |
-| FR11 | Epic 3 | Create failure notification |
-| FR12 | Epic 3 | Delete/update failure notification |
-| FR13 | Epic 3 | Input preservation on failed save |
-| FR14 | Epic 3 | API unreachable error state |
-| FR15 | Epic 3 | Graceful recovery without page refresh |
-| FR16 | Epic 2 | Client-side empty/whitespace rejection |
-| FR17 | Epic 2 | Client-side max-length enforcement (500 chars) |
-| FR18 | Epic 1 | Server-side input validation |
-| FR19 | Epic 4 | Responsive layout 375px–1440px |
-| FR20 | Epic 4 | Keyboard operability for all core actions |
-| FR21 | Epic 4 | WCAG 2.1 AA contrast + ARIA labels |
-| FR22 | Epic 1 | GET /api/todos endpoint |
-| FR23 | Epic 1 | POST /api/todos endpoint |
-| FR24 | Epic 1 | PATCH /api/todos/:id endpoint |
-| FR25 | Epic 1 | DELETE /api/todos/:id endpoint |
-| FR26 | Epic 1 | API error responses for invalid requests |
-| FR27 | Epic 5 | Frontend multi-stage Dockerfile |
-| FR28 | Epic 5 | Backend multi-stage Dockerfile |
-| FR29 | Epic 5 | docker-compose.yml orchestration |
-| FR30 | Epic 1 | Health check endpoint (backend code) |
-| FR31 | Epic 5 | Docker health check declarations |
-| FR32 | Epic 5 | Logs via docker-compose logs |
+| FR   | Epic   | Note                                                |
+| ---- | ------ | --------------------------------------------------- |
+| FR1  | Epic 2 | Create todo via UI                                  |
+| FR2  | Epic 2 | View todo list via UI                               |
+| FR3  | Epic 2 | Toggle complete via UI                              |
+| FR4  | Epic 2 | Toggle incomplete via UI                            |
+| FR5  | Epic 2 | Delete todo via UI                                  |
+| FR6  | Epic 1 | DB-backed persistence (server)                      |
+| FR7  | Epic 2 | Loading state on list fetch                         |
+| FR8  | Epic 2 | Empty state                                         |
+| FR9  | Epic 2 | Visual distinction completed vs active              |
+| FR10 | Epic 2 | Consistent newest-first ordering                    |
+| FR11 | Epic 3 | Create failure notification                         |
+| FR12 | Epic 3 | Delete/update failure notification                  |
+| FR13 | Epic 3 | Input preservation on failed save                   |
+| FR14 | Epic 3 | API unreachable error state                         |
+| FR15 | Epic 3 | Graceful recovery without page refresh              |
+| FR16 | Epic 2 | Client-side empty/whitespace rejection              |
+| FR17 | Epic 2 | Client-side max-length enforcement (500 chars)      |
+| FR18 | Epic 1 | Server-side input validation                        |
+| FR19 | Epic 4 | Responsive layout 375px–1440px                      |
+| FR20 | Epic 4 | Keyboard operability for all core actions           |
+| FR21 | Epic 4 | WCAG 2.1 AA contrast + ARIA labels                  |
+| FR22 | Epic 1 | GET /api/todos endpoint                             |
+| FR23 | Epic 1 | POST /api/todos endpoint                            |
+| FR24 | Epic 1 | PATCH /api/todos/:id endpoint                       |
+| FR25 | Epic 1 | DELETE /api/todos/:id endpoint                      |
+| FR26 | Epic 1 | API error responses for invalid requests            |
+| FR27 | Epic 5 | Frontend multi-stage Dockerfile                     |
+| FR28 | Epic 5 | Backend multi-stage Dockerfile                      |
+| FR29 | Epic 5 | docker-compose.yml orchestration                    |
+| FR30 | Epic 1 | Health check endpoint (backend code)                |
+| FR31 | Epic 5 | Docker health check declarations                    |
+| FR32 | Epic 5 | Logs via docker-compose logs                        |
 | FR33 | Epic 5 | Dev/test env config via env vars + Compose profiles |
 
 ## Epic List
 
 ### Epic 1: Project Foundation & Working Backend API
+
 A developer can run a fully functional REST API for todo CRUD, backed by a real SQLite database, with server-side validation and a health monitoring endpoint. The monorepo is scaffolded with shared tooling, and the backend test infrastructure is in place.
 **FRs covered:** FR6, FR18, FR22, FR23, FR24, FR25, FR26, FR30
 **ARCH covered:** ARCH1, ARCH2, ARCH3, ARCH4, ARCH5, ARCH8 (backend), ARCH9 (backend), ARCH10, ARCH11, ARCH12
 
 ### Epic 2: Core Frontend Application
+
 A user can open the app in a browser and perform the complete todo workflow — add a task, see it in the list, toggle it complete, delete it. The app loads their persisted tasks on return visits. Loading and empty states are handled. The full visual design system (design tokens, Sintony font, shadcn/ui components, card layout) is implemented.
 **FRs covered:** FR1, FR2, FR3, FR4, FR5, FR7, FR8, FR9, FR10, FR16, FR17
 **ARCH covered:** ARCH6, ARCH7, ARCH8 (frontend), ARCH9 (frontend unit/integration tests)
 **UX-DRs covered:** UX-DR1, UX-DR2, UX-DR3, UX-DR4, UX-DR5, UX-DR6, UX-DR7, UX-DR9 (optimistic happy path), UX-DR11 (placeholder + empty state copy)
 
 ### Epic 3: Error Handling & Resilience
+
 A user who experiences network loss or a failed API call sees a clear, calm inline error message with their text preserved. They can retry without refreshing. The UI never freezes or becomes broken after a failed operation. Optimistic rollback is fully implemented for all mutations.
 **FRs covered:** FR11, FR12, FR13, FR14, FR15
 **UX-DRs covered:** UX-DR8 (InlineError component), UX-DR9 (rollback paths), UX-DR11 (error microcopy)
 
 ### Epic 4: Responsive Design & Accessibility
+
 The app works flawlessly at all screen widths from 375px to 1440px with no layout breakage. Every core action is operable by keyboard alone. All interactive elements meet WCAG 2.1 AA contrast requirements and have descriptive ARIA labels. Animations and transitions are implemented per spec.
 **FRs covered:** FR19, FR20, FR21
 **UX-DRs covered:** UX-DR10 (hover-reveal delete, mobile adaptation), UX-DR12 (responsive breakpoints), UX-DR13 (keyboard nav), UX-DR14 (full ARIA), UX-DR15 (animations/transitions)
 
 ### Epic 5: Containerization & Production Readiness
+
 A developer can run `docker-compose up` to spin up the complete environment (frontend Nginx, backend Fastify, SQLite volume). Multi-stage builds produce non-root containers. Health checks are declared at the Docker level. All configuration flows through environment variables.
 **FRs covered:** FR27, FR28, FR29, FR31, FR32, FR33
 
@@ -333,7 +344,7 @@ So that all subsequent UI stories build on a verified visual foundation.
 
 **Given** the `client/` workspace,
 **When** `npm run dev` is executed,
-**Then** the Vite 6.x + React 19.x + TypeScript app starts cleanly with no console errors; TanStack Query 5.x and Tailwind CSS 4.x are configured
+**Then** the Vite 8.x + React 19.x + TypeScript app starts cleanly with no console errors; TanStack Query 5.x and Tailwind CSS 4.x are configured
 
 **Given** the Vite dev server is running,
 **When** a request to `/api/*` is made from the client,

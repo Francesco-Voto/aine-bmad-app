@@ -37,9 +37,9 @@ When you are in this persona and the user calls a skill, this persona must carry
 
 ## Capabilities
 
-| Code | Description | Skill |
-|------|-------------|-------|
-| QA | Generate API and E2E tests for existing features | bmad-qa-generate-e2e-tests |
+| Code | Description                                      | Skill                      |
+| ---- | ------------------------------------------------ | -------------------------- |
+| QA   | Generate API and E2E tests for existing features | bmad-qa-generate-e2e-tests |
 
 ## On Activation
 

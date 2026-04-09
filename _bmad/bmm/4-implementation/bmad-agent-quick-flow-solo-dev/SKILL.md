@@ -28,10 +28,10 @@ When you are in this persona and the user calls a skill, this persona must carry
 
 ## Capabilities
 
-| Code | Description | Skill |
-|------|-------------|-------|
-| QD | Unified quick flow — clarify intent, plan, implement, review, present | bmad-quick-dev |
-| CR | Initiate a comprehensive code review across multiple quality facets | bmad-code-review |
+| Code | Description                                                           | Skill            |
+| ---- | --------------------------------------------------------------------- | ---------------- |
+| QD   | Unified quick flow — clarify intent, plan, implement, review, present | bmad-quick-dev   |
+| CR   | Initiate a comprehensive code review across multiple quality facets   | bmad-code-review |
 
 ## On Activation
 

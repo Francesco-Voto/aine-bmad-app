@@ -1,5 +1,6 @@
 ---
-stepsCompleted: [
+stepsCompleted:
+  [
     step-01-init,
     step-02-discovery,
     step-02b-vision,
@@ -12,7 +13,8 @@ stepsCompleted: [
     step-08-scoping,
     step-09-functional,
     step-10-nonfunctional,
-    step-11-polish]
+    step-11-polish,
+  ]
 inputDocuments: [_bmad-output/project-context.md]
 workflowType: 'prd'
 classification:
@@ -147,19 +149,19 @@ The page loads instantly. There's an input field and an empty list. Alex types "
 
 ### Journey Requirements Summary
 
-| Capability | Driven By |
-|---|---|
-| Task creation (text input + submit) | Journeys 1, 3 |
-| Instant list update after add | Journey 1 |
-| Empty state with clear affordance | Journey 1 |
-| Persistent todo list loaded on open | Journey 2 |
-| Session-persistent storage (real DB) | Journey 2 |
-| Completion toggle + visual distinction | Journey 2 |
-| Task deletion | Journey 2 |
-| Responsive layout (375px–1440px) | Journey 3 |
-| Network error notification | Journey 4 |
-| No data loss on failed save | Journey 4 |
-| Loading states on async operations | Journeys 1, 4 |
+| Capability                             | Driven By     |
+| -------------------------------------- | ------------- |
+| Task creation (text input + submit)    | Journeys 1, 3 |
+| Instant list update after add          | Journey 1     |
+| Empty state with clear affordance      | Journey 1     |
+| Persistent todo list loaded on open    | Journey 2     |
+| Session-persistent storage (real DB)   | Journey 2     |
+| Completion toggle + visual distinction | Journey 2     |
+| Task deletion                          | Journey 2     |
+| Responsive layout (375px–1440px)       | Journey 3     |
+| Network error notification             | Journey 4     |
+| No data loss on failed save            | Journey 4     |
+| Loading states on async operations     | Journeys 1, 4 |
 
 ## Technical Context
 
@@ -284,11 +286,11 @@ Testing is defined as part of story acceptance, not as a post-implementation aft
 
 ### Test Layers
 
-| Layer | Scope | Tooling |
-|---|---|---|
-| Unit | Pure functions, hooks, route handlers in isolation | Vitest (client), Jest (server) |
+| Layer       | Scope                                                        | Tooling                                            |
+| ----------- | ------------------------------------------------------------ | -------------------------------------------------- |
+| Unit        | Pure functions, hooks, route handlers in isolation           | Vitest (client), Jest (server)                     |
 | Integration | API route + database interaction; React component + mock API | Supertest (server), React Testing Library (client) |
-| E2E | Full user journeys through the running application | Playwright |
+| E2E         | Full user journeys through the running application           | Playwright                                         |
 
 ### Unit Test Scenarios
 
@@ -310,13 +312,12 @@ Stories must specify which units require coverage. Common scenarios:
 
 Each scenario maps to a user journey defined in this document:
 
-| Scenario | Journey | Steps |
-|---|---|---|
-| Add and view a todo | Journey 1 | Open app → type text → submit → item appears in list |
-| Empty state | Journey 1 | Fresh app with no todos → empty state message visible → not a blank screen |
-| Toggle todo complete | Journey 2 | Click toggle on existing item → item shows completed state → click again → active state restored |
-| Delete a todo | Journey 2 | Click delete on existing item → item removed from list |
-| Persistence across reload | Journey 2 | Add item → hard reload → item still visible |
-| Mobile layout | Journey 3 | Viewport 375 × 812 → all actions reachable, no horizontal scroll |
-| Error state | Journey 4 | Intercept POST → return 500 → error message visible → list unchanged |
-
+| Scenario                  | Journey   | Steps                                                                                            |
+| ------------------------- | --------- | ------------------------------------------------------------------------------------------------ |
+| Add and view a todo       | Journey 1 | Open app → type text → submit → item appears in list                                             |
+| Empty state               | Journey 1 | Fresh app with no todos → empty state message visible → not a blank screen                       |
+| Toggle todo complete      | Journey 2 | Click toggle on existing item → item shows completed state → click again → active state restored |
+| Delete a todo             | Journey 2 | Click delete on existing item → item removed from list                                           |
+| Persistence across reload | Journey 2 | Add item → hard reload → item still visible                                                      |
+| Mobile layout             | Journey 3 | Viewport 375 × 812 → all actions reachable, no horizontal scroll                                 |
+| Error state               | Journey 4 | Intercept POST → return 500 → error message visible → list unchanged                             |

@@ -58,7 +58,6 @@ Never ask extra questions if you already understand what the user intends.
    **b) Plan-code-review** — everything else. When uncertain whether blast radius is truly zero, choose this path.
    1. Derive a valid kebab-case slug from the clarified intent. If the intent references a tracking identifier (story number, issue number, ticket ID), lead the slug with it (e.g. `3-2-digest-delivery`, `gh-47-fix-auth`). If `{implementation_artifacts}/spec-{slug}.md` already exists, append `-2`, `-3`, etc. Set `spec_file` = `{implementation_artifacts}/spec-{slug}.md`.
 
-
 ## NEXT
 
 Read fully and follow `./step-02-plan.md`

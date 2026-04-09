@@ -1,0 +1,391 @@
+{
+    "info": {
+        "name": "Todo App API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000"
+        }
+    ],
+    "item": [
+        {
+            "name": "GET /api/todos",
+            "item": [
+                {
+                    "name": "List todos (200)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/todos",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "todos"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('content-type is json', () => pm.expect(pm.response.headers.get('content-type')).to.include('application/json'));",
+                                    "pm.test('body is array', () => { const b = pm.response.json(); pm.expect(b).to.be.an('array'); });",
+                                    "if (pm.response.json().length > 0) {",
+                                    "  const todo = pm.response.json()[0];",
+                                    "  pm.test('todo shape', () => {",
+                                    "    pm.expect(todo).to.have.all.keys('id', 'text', 'completed', 'createdAt');",
+                                    "    pm.expect(todo.id).to.be.a('number');",
+                                    "    pm.expect(todo.text).to.be.a('string');",
+                                    "    pm.expect(todo.completed).to.be.a('boolean');",
+                                    "    pm.expect(todo.createdAt).to.be.a('string');",
+                                    "  });",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "POST /api/todos",
+            "item": [
+                {
+                    "name": "Create todo (201)",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/todos",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "todos"
+                            ]
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"text\":\"Buy milk\"}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('status 201', () => pm.response.to.have.status(201));",
+                                    "pm.test('content-type is json', () => pm.expect(pm.response.headers.get('content-type')).to.include('application/json'));",
+                                    "const b = pm.response.json();",
+                                    "pm.test('todo shape', () => {",
+                                    "  pm.expect(b).to.have.all.keys('id', 'text', 'completed', 'createdAt');",
+                                    "  pm.expect(b.id).to.be.a('number');",
+                                    "  pm.expect(b.completed).to.be.false;",
+                                    "  pm.expect(b.text).to.eql('Buy milk');",
+                                    "  pm.expect(b.createdAt).to.be.a('string');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Empty text (400)",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/todos",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "todos"
+                            ]
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"text\":\"\"}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('status 400', () => pm.response.to.have.status(400));",
+                                    "pm.test('error shape is { message }', () => {",
+                                    "  const b = pm.response.json();",
+                                    "  pm.expect(b).to.have.property('message');",
+                                    "  pm.expect(b.message).to.be.a('string');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Whitespace-only text (400)",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/todos",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "todos"
+                            ]
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"text\":\"   \"}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('status 400', () => pm.response.to.have.status(400));",
+                                    "pm.test('error shape is { message }', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Missing text field (400)",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/todos",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "todos"
+                            ]
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('status 400', () => pm.response.to.have.status(400));",
+                                    "pm.test('error shape is { message }', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "PATCH /api/todos/:id",
+            "item": [
+                {
+                    "name": "Toggle complete — non-existent id (404)",
+                    "request": {
+                        "method": "PATCH",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/todos/999999",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "todos",
+                                "999999"
+                            ]
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"completed\":true}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('status 404', () => pm.response.to.have.status(404));",
+                                    "pm.test('error shape is { message }', () => {",
+                                    "  const b = pm.response.json();",
+                                    "  pm.expect(b).to.have.property('message');",
+                                    "  pm.expect(b.message).to.be.a('string');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Toggle complete — known id (200 or 404)",
+                    "request": {
+                        "method": "PATCH",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/todos/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "todos",
+                                "1"
+                            ]
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"completed\":true}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('status is 200 or 404', () => pm.expect(pm.response.code).to.be.oneOf([200, 404]));",
+                                    "pm.test('response shape is correct', () => {",
+                                    "  const b = pm.response.json();",
+                                    "  if (pm.response.code === 200) {",
+                                    "    pm.expect(b).to.have.all.keys('id', 'text', 'completed', 'createdAt');",
+                                    "    pm.expect(b.completed).to.be.true;",
+                                    "  } else {",
+                                    "    pm.expect(b).to.have.property('message');",
+                                    "  }",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "DELETE /api/todos/:id",
+            "item": [
+                {
+                    "name": "Delete — non-existent id (404)",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/todos/999999",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "todos",
+                                "999999"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('status 404', () => pm.response.to.have.status(404));",
+                                    "pm.test('error shape is { message }', () => {",
+                                    "  const b = pm.response.json();",
+                                    "  pm.expect(b).to.have.property('message');",
+                                    "  pm.expect(b.message).to.be.a('string');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete todo (204)",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/todos/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "todos",
+                                "1"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('status is 204 or 404', () => pm.expect(pm.response.code).to.be.oneOf([204, 404]));",
+                                    "if (pm.response.code === 204) {",
+                                    "  pm.test('no response body', () => pm.expect(pm.response.text()).to.be.empty);",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

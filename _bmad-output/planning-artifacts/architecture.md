@@ -1,5 +1,15 @@
 ---
-stepsCompleted: [step-01-init, step-02-context, step-03-starter, step-04-decisions, step-05-patterns, step-06-structure, step-07-validation, step-08-complete]
+stepsCompleted:
+  [
+    step-01-init,
+    step-02-context,
+    step-03-starter,
+    step-04-decisions,
+    step-05-patterns,
+    step-06-structure,
+    step-07-validation,
+    step-08-complete,
+  ]
 status: 'complete'
 completedAt: '9 April 2026'
 inputDocuments: [prd.md, project-context.md]
@@ -64,25 +74,25 @@ _This document builds collaboratively through step-by-step discovery. Sections a
 
 ### Technology Decisions
 
-| Layer | Technology | Version | Rationale |
-|---|---|---|---|
-| Frontend | React | 19.x | Component model fits the UI; hooks cover all state needs |
-| Frontend build | Vite | 6.x | Fast dev server, minimal config, modern defaults |
-| Frontend language | TypeScript | 5.x | Type safety across the stack, catches bugs early |
-| CSS | Tailwind CSS | 4.x | Utility-first, no runtime overhead, fast to build responsive layouts |
-| Data fetching | TanStack Query | 5.x | Manages server state, caching, loading/error states via `useQuery` / `useMutation` |
-| Backend | Fastify | 5.x | Schema-first, low overhead, native JSON Schema validation |
-| Backend language | TypeScript | 5.x | Shared language with frontend, type-safe route handlers |
-| Database | SQLite via better-sqlite3 | — | Zero-config, file-based, durable; upgradeable to PostgreSQL if multi-user is added later |
-| API validation | Fastify JSON Schema (built-in) | — | Native to Fastify, validates request/response bodies at the framework level |
-| Unit tests (client) | Vitest | 3.x | Vite-native, same config, fast |
-| Unit tests (server) | Jest | 29.x | Mature Node test runner for server-side route handler tests |
-| Integration (server) | Supertest | 7.x | HTTP assertion library for Fastify route integration tests |
-| Integration (client) | React Testing Library | 16.x | Component-level integration tests with real DOM |
-| E2E | Playwright | 1.x | Cross-browser, covers all 7 defined E2E journey scenarios |
-| Linting | ESLint + typescript-eslint | 9.x | Flat config, shared rules across both workspaces |
-| Formatting | Prettier | 3.x | Zero-debate code style |
-| Containerisation | Docker + Docker Compose | — / 2.x | Required by FR27–FR33; multi-stage builds, health checks |
+| Layer                | Technology                     | Version | Rationale                                                                                |
+| -------------------- | ------------------------------ | ------- | ---------------------------------------------------------------------------------------- |
+| Frontend             | React                          | 19.x    | Component model fits the UI; hooks cover all state needs                                 |
+| Frontend build       | Vite                           | 8.x     | Fast dev server, minimal config, modern defaults                                         |
+| Frontend language    | TypeScript                     | 5.x     | Type safety across the stack, catches bugs early                                         |
+| CSS                  | Tailwind CSS                   | 4.x     | Utility-first, no runtime overhead, fast to build responsive layouts                     |
+| Data fetching        | TanStack Query                 | 5.x     | Manages server state, caching, loading/error states via `useQuery` / `useMutation`       |
+| Backend              | Fastify                        | 5.x     | Schema-first, low overhead, native JSON Schema validation                                |
+| Backend language     | TypeScript                     | 5.x     | Shared language with frontend, type-safe route handlers                                  |
+| Database             | SQLite via better-sqlite3      | —       | Zero-config, file-based, durable; upgradeable to PostgreSQL if multi-user is added later |
+| API validation       | Fastify JSON Schema (built-in) | —       | Native to Fastify, validates request/response bodies at the framework level              |
+| Unit tests (client)  | Vitest                         | 3.x     | Vite-native, same config, fast                                                           |
+| Unit tests (server)  | Jest                           | 29.x    | Mature Node test runner for server-side route handler tests                              |
+| Integration (server) | Supertest                      | 7.x     | HTTP assertion library for Fastify route integration tests                               |
+| Integration (client) | React Testing Library          | 16.x    | Component-level integration tests with real DOM                                          |
+| E2E                  | Playwright                     | 1.x     | Cross-browser, covers all 7 defined E2E journey scenarios                                |
+| Linting              | ESLint + typescript-eslint     | 9.x     | Flat config, shared rules across both workspaces                                         |
+| Formatting           | Prettier                       | 3.x     | Zero-debate code style                                                                   |
+| Containerisation     | Docker + Docker Compose        | — / 2.x | Required by FR27–FR33; multi-stage builds, health checks                                 |
 
 ### Initialization Commands
 
@@ -105,6 +115,7 @@ npm install --save-dev typescript @types/node ts-node \
 ### Decision Priority Analysis
 
 **Critical Decisions (Block Implementation):**
+
 - Repository structure: monorepo (`client/` + `server/` under one root)
 - API contract: REST endpoints, shapes, and error format defined
 - Database access: direct SQL via `better-sqlite3`, no ORM
@@ -112,6 +123,7 @@ npm install --save-dev typescript @types/node ts-node \
 - Dev-time API communication: Vite proxy (`/api/*` → `localhost:3000`)
 
 **Deferred Decisions (Post-MVP):**
+
 - Database migration to PostgreSQL (architecture does not prevent it)
 - Authentication / session management
 - Task filtering, search, ordering
@@ -123,6 +135,7 @@ npm install --save-dev typescript @types/node ts-node \
 **Decision:** Monorepo — single repository with `client/` and `server/` subdirectories.
 
 **Structure:**
+
 ```
 todo-app/
 ├── client/                        # React SPA (Vite)
@@ -144,6 +157,7 @@ todo-app/
 **Rationale:** The entire data model is a single table with 4 columns. An ORM adds a dependency, an abstraction layer, and a migration toolchain for no benefit at this scale. Direct parameterized SQL is explicit, readable, and safe — `better-sqlite3` enforces prepared statements by default, preventing SQL injection. If the project grows to require PostgreSQL, the queries are trivially portable.
 
 **Schema:**
+
 ```sql
 CREATE TABLE IF NOT EXISTS todos (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -161,31 +175,45 @@ CREATE TABLE IF NOT EXISTS todos (
 
 **Base path:** `/api`
 
-| Method | Path | Description | Success | Error codes |
-|---|---|---|---|---|
-| GET | `/api/todos` | List all todos, ordered by `created_at DESC` (newest first) | 200 `Todo[]` | 500 |
-| POST | `/api/todos` | Create a todo | 201 `Todo` | 400, 500 |
-| PATCH | `/api/todos/:id` | Toggle `completed` | 200 `Todo` | 400, 404, 500 |
-| DELETE | `/api/todos/:id` | Delete a todo | 204 No Content | 404, 500 |
-| GET | `/health` | Health check (no `/api` prefix) | 200 `HealthResponse` | 503 |
+| Method | Path             | Description                                                 | Success              | Error codes   |
+| ------ | ---------------- | ----------------------------------------------------------- | -------------------- | ------------- |
+| GET    | `/api/todos`     | List all todos, ordered by `created_at DESC` (newest first) | 200 `Todo[]`         | 500           |
+| POST   | `/api/todos`     | Create a todo                                               | 201 `Todo`           | 400, 500      |
+| PATCH  | `/api/todos/:id` | Toggle `completed`                                          | 200 `Todo`           | 400, 404, 500 |
+| DELETE | `/api/todos/:id` | Delete a todo                                               | 204 No Content       | 404, 500      |
+| GET    | `/health`        | Health check (no `/api` prefix)                             | 200 `HealthResponse` | 503           |
 
 **Shapes:**
 
 ```typescript
 // Todo
-{ id: number; text: string; completed: boolean; createdAt: string }
+{
+  id: number;
+  text: string;
+  completed: boolean;
+  createdAt: string;
+}
 
 // POST /api/todos body
-{ text: string }  // max 500 chars, non-empty after trim
+{
+  text: string;
+} // max 500 chars, non-empty after trim
 
 // PATCH /api/todos/:id body
-{ completed: boolean }
+{
+  completed: boolean;
+}
 
 // Error (all 4xx / 5xx)
-{ message: string }
+{
+  message: string;
+}
 
 // Health
-{ status: "ok"; db: "ok" | "error" }
+{
+  status: 'ok';
+  db: 'ok' | 'error';
+}
 ```
 
 **Validation:** Fastify JSON Schema on all request bodies and route params. Invalid payloads return 400 with `{ message }` before reaching route handlers.
@@ -195,11 +223,13 @@ CREATE TABLE IF NOT EXISTS todos (
 ### Frontend Architecture
 
 **State management:**
+
 - **Server state:** TanStack Query (`useQuery` / `useMutation`) for all server state. `useQuery({ queryKey: ['todos'], queryFn })` fetches the todo list on mount and provides `data`, `isLoading`, `isError` automatically. `useMutation` + `queryClient.invalidateQueries(['todos'])` handles add, toggle, and delete — on success the query is invalidated and the list refetches.
 - **Local UI state:** plain `useState` for input value and error banner visibility. No Redux, Zustand, or other global store.
 - **Update strategy:** optimistic UI — all mutations update the UI before server confirmation, with rollback on failure via `onMutate` / `onError` / `onSettled` callbacks. On success, `queryClient.invalidateQueries(['todos'])` triggers a re-fetch to confirm server state. This is the v1 interaction model, aligned with the UX specification.
 
 **Component structure:**
+
 ```
 client/src/
 ├── api/
@@ -216,6 +246,7 @@ client/src/
 ```
 
 **Dev-time API proxy (`vite.config.ts`):**
+
 ```typescript
 server: {
   proxy: {
@@ -223,6 +254,7 @@ server: {
   }
 }
 ```
+
 Client code always uses relative paths (`/api/todos`). No environment-specific URL logic in the client — the same code works in dev (via Vite proxy) and in Docker (via Compose service name and Nginx upstream).
 
 ---
@@ -230,21 +262,24 @@ Client code always uses relative paths (`/api/todos`). No environment-specific U
 ### Infrastructure & Deployment
 
 **Frontend container (Nginx, multi-stage):**
+
 - Stage 1: `node:22-alpine` — `npm ci && npm run build`
 - Stage 2: `nginx:alpine` — copy `/dist`, serve on port 80, non-root user, SPA fallback (`try_files $uri /index.html`)
 
 **Backend container (multi-stage):**
+
 - Stage 1: `node:22-alpine` — `npm ci && npm run build` (tsc → `dist/`)
 - Stage 2: `node:22-alpine` — copy compiled output + production `node_modules`, run as non-root user on port 3000
 
 **Docker Compose services:**
 
-| Service | Image | Port | Notes |
-|---|---|---|---|
-| `client` | nginx:alpine | 80 | depends_on: server |
+| Service  | Image          | Port | Notes                                     |
+| -------- | -------------- | ---- | ----------------------------------------- |
+| `client` | nginx:alpine   | 80   | depends_on: server                        |
 | `server` | node:22-alpine | 3000 | mounts `./data:/app/data` for SQLite file |
 
 **Environment variables (server):**
+
 ```
 PORT=3000
 DB_PATH=/app/data/todos.db
@@ -258,6 +293,7 @@ NODE_ENV=development|production|test
 ### Decision Impact Analysis
 
 **Implementation sequence:**
+
 1. Monorepo scaffold — root config (ESLint, Prettier, tsconfig base), `client/`, `server/` directories
 2. Fastify server bootstrap — `better-sqlite3` init, schema creation, prepared statements
 3. REST endpoints (FR22–FR26) with JSON Schema validation + health check
@@ -267,6 +303,7 @@ NODE_ENV=development|production|test
 7. Test setup — Vitest, Jest, Supertest, RTL, Playwright
 
 **Cross-component dependencies:**
+
 - `client/src/api/todos.ts` depends on the agreed REST contract — shapes and paths must not diverge from this document
 - Vite proxy config must match the server port (`3000`) and base path (`/api`)
 - Compose volume mount path (`/app/data/todos.db`) must match the `DB_PATH` env var
@@ -279,17 +316,20 @@ NODE_ENV=development|production|test
 ### Naming Patterns
 
 **Database (SQLite / better-sqlite3):**
+
 - Tables: `snake_case`, plural — `todos`
 - Columns: `snake_case` — `id`, `text`, `completed`, `created_at`
 - No prefix conventions — simple names only
 
 **API (Fastify routes):**
+
 - Endpoints: `kebab-case`, plural nouns — `/api/todos`
 - Route params: `:id` (not `{id}`)
 - JSON response fields: `camelCase` — `createdAt`, not `created_at`
 - The server maps DB `created_at` → JSON `createdAt` at the route handler level
 
 **Code (TypeScript — both client and server):**
+
 - Files: `PascalCase` for components and classes (`TodoItem.tsx`, `TodoService.ts`), `camelCase` for utilities and hooks (`useTodos.ts`, `todos.ts`)
 - Functions / variables: `camelCase`
 - Types / interfaces: `PascalCase` (`Todo`, `CreateTodoBody`)
@@ -298,11 +338,13 @@ NODE_ENV=development|production|test
 ### Structure Patterns
 
 **Test placement:**
+
 - Server: `server/src/__tests__/` — unit and integration together, distinguished by filename suffix (`.unit.test.ts` / `.integration.test.ts`)
 - Client: co-located next to the file under test — `TodoItem.test.tsx` next to `TodoItem.tsx`
 - E2E: `e2e/` at monorepo root
 
 **Import ordering (enforced by ESLint):**
+
 1. Node built-ins
 2. External packages
 3. Internal absolute imports
@@ -311,6 +353,7 @@ NODE_ENV=development|production|test
 ### Format Patterns
 
 **API responses — direct, no wrapper:**
+
 ```typescript
 // ✅ Correct
 GET /api/todos  → 200: Todo[]
@@ -321,6 +364,7 @@ POST /api/todos → 201: Todo
 ```
 
 **Error responses — always `{ message: string }`:**
+
 ```typescript
 // All 4xx and 5xx
 { "message": "Todo not found" }
@@ -336,27 +380,32 @@ POST /api/todos → 201: Todo
 ### Process Patterns
 
 **Error handling — server:**
+
 - All errors return `{ message }` — no stack traces in responses regardless of `NODE_ENV`
 - 404 for unknown `:id`; 400 for validation failures; 500 for unexpected errors
 - Health check catches DB errors and returns 503, never 500
 
 **Error handling — client:**
+
 - TanStack Query `error` state drives all user-visible error feedback
 - Failed mutations do NOT clear the input field — the user's text is preserved for retry (FR13)
 - No `alert()` or `console.error` as user-facing error mechanisms
 
 **Loading states:**
+
 - TanStack Query `isLoading` / `isPending` drives all loading UI — no local `useState` for loading
 - Loading indicator shown on initial list fetch; mutations show inline feedback (disabled button state)
 - `InlineError` visibility is local `useState` — shown on mutation error, dismissed on next successful action
 
 **Optimistic updates:**
+
 - Used in v1 — all mutations (add, toggle, delete) update the UI immediately via `onMutate`, with rollback via `onError` and final confirmation via `onSettled` + `invalidateQueries`
 - This is architecturally native to TanStack Query `useMutation` and requires no structural change to the component tree
 
 ### Enforcement Rules
 
 All agents MUST:
+
 - Return `camelCase` fields in all JSON responses, regardless of DB column names
 - Return `{ message: string }` for every error — never a bare string, never a stack trace
 - Cast SQLite booleans (`0` / `1`) to TypeScript `boolean` at the route handler boundary, not in the component
@@ -364,6 +413,7 @@ All agents MUST:
 - Preserve user input on failed mutations — never reset the form on error
 
 **Anti-patterns to avoid:**
+
 ```typescript
 // ❌ Raw DB field names in JSON response
 { "created_at": "2026-04-09" }         // use createdAt
@@ -470,11 +520,13 @@ todo-app/                              # monorepo root
 ### Architectural Boundaries
 
 **API Boundary — the only cross-service contract:**
+
 - `client/src/api/todos.ts` is the sole entry point from client to server
 - All fetch calls go through this module — no `fetch()` calls in components directly
 - `client/src/types/todo.ts` and `server/src/types/todo.ts` must stay identical
 
 **Component Boundaries:**
+
 - `TodoInput` owns the add form: input value (`useState`), submit handler, client-side validation
 - `TodoList` owns list rendering + loading / empty / populated states
 - `TodoItem` owns a single row: completed style, toggle action, delete action
@@ -483,24 +535,25 @@ todo-app/                              # monorepo root
 - No component calls `fetch()` directly — all server communication flows through `useTodos.ts`
 
 **Data Boundary:**
+
 - `server/src/db/client.ts` is the only file that imports `better-sqlite3`
 - All SQL lives in `db/client.ts` as named prepared statements
 - SQLite boolean cast (`=== 1`) happens in `db/client.ts`, not in routes or components
 
 ### Requirements to Structure Mapping
 
-| FR Range | Capability | Location |
-|---|---|---|
-| FR1, FR16–FR18 | Create / validate todo | `TodoInput.tsx`, `schemas/todos.ts`, `routes/todos.ts` |
-| FR2, FR7–FR10 | List display + states | `TodoList.tsx`, `useTodos.ts`, `routes/todos.ts` GET |
-| FR3–FR4 | Toggle completed | `TodoItem.tsx`, `routes/todos.ts` PATCH |
-| FR5 | Delete todo | `TodoItem.tsx`, `routes/todos.ts` DELETE |
-| FR6 | Persistence | `db/client.ts`, `db/schema.sql`, Docker volume |
-| FR11–FR15 | Error handling & feedback | `useTodos.ts` mutation callbacks, `InlineError.tsx` |
-| FR19–FR21 | Responsive + accessibility | All components — Tailwind breakpoints + ARIA |
-| FR22–FR26 | API endpoints | `routes/todos.ts`, `schemas/todos.ts` |
-| FR27–FR33 | Docker / infra | `client/Dockerfile`, `server/Dockerfile`, `docker-compose.yml` |
-| FR30–FR31 | Health check | `routes/health.ts`, Docker `HEALTHCHECK` declaration |
+| FR Range       | Capability                 | Location                                                       |
+| -------------- | -------------------------- | -------------------------------------------------------------- |
+| FR1, FR16–FR18 | Create / validate todo     | `TodoInput.tsx`, `schemas/todos.ts`, `routes/todos.ts`         |
+| FR2, FR7–FR10  | List display + states      | `TodoList.tsx`, `useTodos.ts`, `routes/todos.ts` GET           |
+| FR3–FR4        | Toggle completed           | `TodoItem.tsx`, `routes/todos.ts` PATCH                        |
+| FR5            | Delete todo                | `TodoItem.tsx`, `routes/todos.ts` DELETE                       |
+| FR6            | Persistence                | `db/client.ts`, `db/schema.sql`, Docker volume                 |
+| FR11–FR15      | Error handling & feedback  | `useTodos.ts` mutation callbacks, `InlineError.tsx`            |
+| FR19–FR21      | Responsive + accessibility | All components — Tailwind breakpoints + ARIA                   |
+| FR22–FR26      | API endpoints              | `routes/todos.ts`, `schemas/todos.ts`                          |
+| FR27–FR33      | Docker / infra             | `client/Dockerfile`, `server/Dockerfile`, `docker-compose.yml` |
+| FR30–FR31      | Health check               | `routes/health.ts`, Docker `HEALTHCHECK` declaration           |
 
 ### Data Flow
 
@@ -593,6 +646,7 @@ The `server` hostname in `proxy_pass` matches the Docker Compose service name.
 **Status: READY FOR IMPLEMENTATION**
 
 **Strengths:**
+
 - Single-entity data model keeps the entire stack minimal and auditable
 - Every boundary (API shape, boolean cast, fetch path) is a single file — refactoring is localised
 - The Vite proxy / Nginx upstream symmetry means zero environment logic in client code
@@ -601,6 +655,7 @@ The `server` hostname in `proxy_pass` matches the Docker Compose service name.
 - QA is a first-class citizen in every story — tests are written during, not after, implementation
 
 **Future enhancements (post-MVP, architecture supports them without structural change):**
+
 - Swap SQLite for PostgreSQL: change `db/client.ts` and connection config only; routes and shapes unchanged
 - Add authentication: Fastify plugin at the route level; TanStack Query auth headers in `api/todos.ts`
 - Swap SQLite for PostgreSQL: change `db/client.ts` and connection config only; routes and shapes unchanged (already listed above)
