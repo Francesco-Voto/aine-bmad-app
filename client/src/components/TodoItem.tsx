@@ -1,8 +1,9 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 
-import { deleteTodo, toggleTodo } from '../api/todos';
 import type { Todo } from '../api/types';
+import { useDeleteTodo } from '../hooks/useDeleteTodo';
+import { useToggleTodo } from '../hooks/useToggleTodo';
+import { InlineError } from './InlineError';
 import { Checkbox } from './ui/Checkbox';
 
 interface TodoItemProps {
@@ -10,59 +11,28 @@ interface TodoItemProps {
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
-  const queryClient = useQueryClient();
   const [collapsed, setCollapsed] = React.useState(false);
 
-  const toggleMutation = useMutation({
-    mutationFn: ({ id, completed }: { id: number; completed: boolean }) =>
-      toggleTodo(id, completed),
-    onMutate: async ({ id, completed }) => {
-      await queryClient.cancelQueries({ queryKey: ['todos'] });
-      const previous = queryClient.getQueryData<Todo[]>(['todos']);
-      queryClient.setQueryData<Todo[]>(
-        ['todos'],
-        (old) => old?.map((t) => (t.id === id ? { ...t, completed } : t)) ?? []
-      );
-      return { previous };
-    },
-    onError: (_err, _vars, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(['todos'], context.previous);
-      }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['todos'] });
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: number) => deleteTodo(id),
-    onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: ['todos'] });
-      const previous = queryClient.getQueryData<Todo[]>(['todos']);
-      setCollapsed(true);
-      queryClient.setQueryData<Todo[]>(['todos'], (old) => old?.filter((t) => t.id !== id) ?? []);
-      return { previous };
-    },
-    onError: (_err, _vars, context) => {
-      setCollapsed(false);
-      if (context?.previous) {
-        queryClient.setQueryData(['todos'], context.previous);
-      }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['todos'] });
-    },
-  });
+  const { mutate: toggleMutate, isError: toggleIsError } = useToggleTodo();
+  const { mutate: deleteMutate, isError: deleteIsError } = useDeleteTodo();
 
   const handleToggle = (checked: boolean | 'indeterminate') => {
     if (typeof checked === 'boolean') {
-      toggleMutation.mutate({ id: todo.id, completed: checked });
+      toggleMutate({ id: todo.id, completed: checked });
     }
   };
 
   const handleDelete = () => {
-    deleteMutation.mutate(todo.id);
+    setCollapsed(true);
+    deleteMutate(todo.id, {
+      onError: () => setCollapsed(false),
+    });
+  };
+
+  const getItemError = (): string | undefined => {
+    if (toggleIsError) return "Couldn't update — try again.";
+    if (deleteIsError) return "Couldn't delete — try again.";
+    return undefined;
   };
 
   const collapseStyle: React.CSSProperties = collapsed
@@ -83,50 +53,56 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
         textDecoration: 'line-through',
         opacity: 0.6,
         color: 'var(--color-text-disabled)',
+        wordBreak: 'break-word',
+        overflowWrap: 'anywhere',
       }
     : {
         flex: 1,
         fontSize: 'var(--text-base)',
         color: 'var(--color-text-primary)',
+        wordBreak: 'break-word',
+        overflowWrap: 'anywhere',
       };
 
   return (
-    <div
-      className="todo-card"
-      style={{
-        background: 'var(--color-surface)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 6,
-        padding: '12px 14px',
-        marginBottom: 6,
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--space-3)',
-        ...collapseStyle,
-      }}
-    >
-      <Checkbox
-        checked={todo.completed}
-        onCheckedChange={handleToggle}
-        aria-label={`Complete: ${todo.text}`}
-      />
-      <span style={textStyle}>{todo.text}</span>
-      <button
-        className="delete-btn"
-        aria-label={`Delete: ${todo.text}`}
-        onClick={handleDelete}
+    <div style={{ marginBottom: 6 }}>
+      <div
+        className="todo-card"
         style={{
-          background: 'transparent',
-          border: 'none',
-          cursor: 'pointer',
-          color: 'var(--color-text-secondary)',
-          fontSize: 16,
-          lineHeight: 1,
-          padding: '2px 4px',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-border)',
+          borderRadius: 6,
+          padding: '12px 14px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 'var(--space-3)',
+          ...collapseStyle,
         }}
       >
-        ✕
-      </button>
+        <Checkbox
+          checked={todo.completed}
+          onCheckedChange={handleToggle}
+          aria-label={`Complete: ${todo.text}`}
+        />
+        <span style={textStyle}>{todo.text}</span>
+        <button
+          className="delete-btn"
+          aria-label={`Delete: ${todo.text}`}
+          onClick={handleDelete}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            color: 'var(--color-text-secondary)',
+            fontSize: 16,
+            lineHeight: 1,
+            padding: '2px 4px',
+          }}
+        >
+          ✕
+        </button>
+      </div>
+      <InlineError message={getItemError()} variant="item" />
     </div>
   );
 };

@@ -5,16 +5,23 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
   reporter: 'html',
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
-  webServer: {
-    command: 'npm run dev --workspace=client',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
-  },
+  webServer: [
+    {
+      command: 'npm run dev --workspace=server',
+      url: 'http://localhost:3000/health',
+      reuseExistingServer: !process.env.CI,
+    },
+    {
+      command: 'npm run dev --workspace=client',
+      url: 'http://localhost:5173',
+      reuseExistingServer: !process.env.CI,
+    },
+  ],
 });

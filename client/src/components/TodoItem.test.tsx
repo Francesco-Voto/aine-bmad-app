@@ -130,4 +130,72 @@ describe('TodoItem', () => {
       );
     });
   });
+
+  it('shows "Couldn\'t update" InlineError when toggle mutation fails', async () => {
+    mockFetch.mockRejectedValueOnce(new Error('Network error'));
+
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    qc.setQueryData(['todos'], [activeTodo]);
+
+    const user = userEvent.setup();
+    render(
+      <QueryClientProvider client={qc}>
+        <TodoItem todo={activeTodo} />
+      </QueryClientProvider>
+    );
+
+    await user.click(screen.getByRole('checkbox', { name: 'Complete: Buy milk' }));
+
+    await screen.findByRole('alert');
+    expect(screen.getByRole('alert').textContent).toContain("Couldn't update");
+  });
+
+  it('shows "Couldn\'t delete" InlineError when delete mutation fails', async () => {
+    mockFetch.mockRejectedValueOnce(new Error('Network error'));
+
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    qc.setQueryData(['todos'], [activeTodo]);
+
+    const user = userEvent.setup();
+    render(
+      <QueryClientProvider client={qc}>
+        <TodoItem todo={activeTodo} />
+      </QueryClientProvider>
+    );
+
+    await user.click(screen.getByLabelText('Delete: Buy milk'));
+
+    await screen.findByRole('alert');
+    expect(screen.getByRole('alert').textContent).toContain("Couldn't delete");
+  });
+
+  it('clears toggle InlineError on successful retry', async () => {
+    mockFetch.mockRejectedValueOnce(new Error('Network error')).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ ...activeTodo, completed: true }),
+    } as unknown as Response);
+
+    const qc = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    qc.setQueryData(['todos'], [activeTodo]);
+
+    const user = userEvent.setup();
+    render(
+      <QueryClientProvider client={qc}>
+        <TodoItem todo={activeTodo} />
+      </QueryClientProvider>
+    );
+
+    await user.click(screen.getByRole('checkbox', { name: 'Complete: Buy milk' }));
+    await screen.findByRole('alert'); // error appears
+
+    await user.click(screen.getByRole('checkbox', { name: 'Complete: Buy milk' })); // retry
+    await waitFor(() => expect(screen.queryByRole('alert')).toBeNull());
+  });
 });

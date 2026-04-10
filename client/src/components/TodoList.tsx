@@ -1,11 +1,15 @@
+import { useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 
 import type { Todo } from '../api/types';
 import { useTodos } from '../hooks/useTodos';
+import { InlineError } from './InlineError';
 import { TodoItem } from './TodoItem';
+import { Button } from './ui/Button';
 
 const TodoList: React.FC = () => {
   const { isLoading, isError, data } = useTodos();
+  const queryClient = useQueryClient();
 
   return (
     <div aria-live="polite">
@@ -26,16 +30,23 @@ const TodoList: React.FC = () => {
         </div>
       )}
       {isError && !isLoading && (
-        <p
+        <div
           style={{
-            textAlign: 'center',
-            color: 'var(--color-error)',
-            fontSize: 'var(--text-sm)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 'var(--space-3)',
             marginTop: 'var(--space-6)',
           }}
         >
-          Something went wrong. Please try again.
-        </p>
+          <InlineError message="Couldn't load your tasks. Check your connection." />
+          <Button
+            variant="ghost"
+            onClick={() => queryClient.refetchQueries({ queryKey: ['todos'] })}
+          >
+            Retry
+          </Button>
+        </div>
       )}
       {!isLoading && !isError && (!data || data.length === 0) && (
         <p

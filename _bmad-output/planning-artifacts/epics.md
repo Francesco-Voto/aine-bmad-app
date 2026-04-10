@@ -654,6 +654,52 @@ So that I'm never left staring at a blank screen.
 
 ---
 
+### Story 3.5: E2E Test Suite — All 7 User Journey Scenarios
+
+As a developer,
+I want a Playwright E2E test suite covering all 7 defined user journey scenarios,
+So that every core user interaction is verified end-to-end against the running full-stack application.
+
+**Acceptance Criteria:**
+
+**Given** the full-stack application is running (server on :3000, client on :5173 via Playwright `webServer`),
+**When** `npx playwright test` is run from the monorepo root,
+**Then** all 7 spec files execute and pass without manual intervention
+
+**Given** `e2e/fixtures/db.ts` seed/reset helpers,
+**When** each spec runs,
+**Then** the database is reset to a clean state before each test (via `DELETE /api/todos` or direct API calls) so tests are independent
+
+**Given** Journey 1 — add-todo.spec.ts,
+**When** the user types a task and presses Enter,
+**Then** the task appears in the list immediately; the input clears; the task persists after page reload
+
+**Given** Journey 1 — empty-state.spec.ts,
+**When** the app loads with no todos in the DB,
+**Then** the empty state message `"No tasks yet. Add one above."` is visible
+
+**Given** Journey 2 — complete-todo.spec.ts,
+**When** the user clicks the checkbox on a todo,
+**Then** the item becomes visually struck through and the `completed` state is persisted after reload
+
+**Given** Journey 2 — delete-todo.spec.ts,
+**When** the user hovers a todo and clicks the delete button,
+**Then** the item is removed from the list and absent after reload
+
+**Given** Journey 2 — persistence.spec.ts,
+**When** the page is reloaded after adding todos,
+**Then** all previously added todos are still present with the same text and completion state
+
+**Given** Journey 3 — mobile-layout.spec.ts,
+**When** the viewport is set to 375×812,
+**Then** the layout renders without horizontal scroll; the input and list are fully visible; no elements are clipped or overflow
+
+**Given** Journey 4 — error-state.spec.ts,
+**When** `GET /api/todos` is intercepted to return 503 using Playwright route interception,
+**Then** the list error state is shown with the Retry button visible; after clearing the interception and clicking Retry, the list loads normally
+
+---
+
 ## Epic 4: Responsive Design & Accessibility
 
 The app works flawlessly at all screen widths from 375px to 1440px. Every core action is operable by keyboard alone. All interactive elements meet WCAG 2.1 AA and have descriptive ARIA labels. Animations and transitions are implemented per spec.

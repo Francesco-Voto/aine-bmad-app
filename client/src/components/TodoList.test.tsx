@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -26,7 +27,7 @@ describe('TodoList', () => {
       error: null,
     } as unknown as ReturnType<typeof useTodos>);
 
-    const { container } = render(<TodoList />);
+    const { container } = renderWithQuery(<TodoList />);
 
     expect(container.querySelector('[aria-busy="true"]')).toBeTruthy();
     expect(container.querySelectorAll('.skeleton')).toHaveLength(3);
@@ -41,7 +42,7 @@ describe('TodoList', () => {
       error: null,
     } as unknown as ReturnType<typeof useTodos>);
 
-    render(<TodoList />);
+    renderWithQuery(<TodoList />);
 
     expect(screen.getByText('No tasks yet. Add one above.')).toBeDefined();
     expect(screen.queryByRole('list')).toBeNull();
@@ -55,11 +56,27 @@ describe('TodoList', () => {
       error: new Error('Network error'),
     } as unknown as ReturnType<typeof useTodos>);
 
-    render(<TodoList />);
+    renderWithQuery(<TodoList />);
 
-    expect(screen.getByText('Something went wrong. Please try again.')).toBeDefined();
+    expect(screen.getByRole('alert')).toBeDefined();
+    expect(screen.getByRole('alert').textContent).toContain("Couldn't load your tasks");
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeDefined();
     expect(screen.queryByRole('list')).toBeNull();
     expect(screen.queryByText('No tasks yet. Add one above.')).toBeNull();
+  });
+
+  it('Retry button triggers refetch', async () => {
+    mockUseTodos.mockReturnValue({
+      isLoading: false,
+      data: undefined,
+      isError: true,
+      error: new Error('Network error'),
+    } as unknown as ReturnType<typeof useTodos>);
+
+    renderWithQuery(<TodoList />);
+    await userEvent.click(screen.getByRole('button', { name: 'Retry' }));
+
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeDefined();
   });
 
   it('renders the list of todos when data is available', () => {

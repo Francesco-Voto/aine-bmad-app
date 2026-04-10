@@ -105,4 +105,56 @@ describe('TodoInput', () => {
     await userEvent.click(btn);
     expect(fetchMock).not.toHaveBeenCalled();
   });
+
+  it('shows InlineError when create mutation fails', async () => {
+    const mockFetch = vi.fn().mockRejectedValueOnce(new Error('Network error'));
+    vi.stubGlobal('fetch', mockFetch);
+
+    renderWithQuery(<TodoInput />);
+    const input = screen.getByPlaceholderText('Add a task…');
+    await userEvent.type(input, 'Buy milk');
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+
+    await screen.findByRole('alert');
+    expect(screen.getByRole('alert').textContent).toContain("Couldn't save");
+  });
+
+  it('preserves input text after create failure', async () => {
+    const mockFetch = vi.fn().mockRejectedValueOnce(new Error('Network error'));
+    vi.stubGlobal('fetch', mockFetch);
+
+    renderWithQuery(<TodoInput />);
+    const input = screen.getByPlaceholderText('Add a task…');
+    await userEvent.type(input, 'Buy milk');
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+
+    await screen.findByRole('alert');
+    expect((input as HTMLInputElement).value).toBe('Buy milk');
+  });
+
+  it('clears InlineError on successful retry', async () => {
+    const mockFetch = vi
+      .fn()
+      .mockRejectedValueOnce(new Error('Network error'))
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 201,
+        json: async () => ({
+          id: 99,
+          text: 'Buy milk',
+          completed: false,
+          createdAt: new Date().toISOString(),
+        }),
+      });
+    vi.stubGlobal('fetch', mockFetch);
+
+    renderWithQuery(<TodoInput />);
+    const input = screen.getByPlaceholderText('Add a task…');
+    await userEvent.type(input, 'Buy milk');
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+    await screen.findByRole('alert'); // error appears
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' })); // retry
+    await waitFor(() => expect(screen.queryByRole('alert')).toBeNull());
+  });
 });
