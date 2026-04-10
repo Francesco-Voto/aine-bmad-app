@@ -1,0 +1,108 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import * as React from 'react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import { TodoInput } from './TodoInput';
+
+function renderWithQuery(ui: React.ReactElement) {
+  const qc = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
+  return render(<QueryClientProvider client={qc}>{ui}</QueryClientProvider>);
+}
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+describe('TodoInput', () => {
+  it('renders with autofocus and placeholder', () => {
+    renderWithQuery(<TodoInput />);
+    const input = screen.getByPlaceholderText('Add a task…');
+    expect(input).toBeInTheDocument();
+    expect(document.activeElement).toBe(input);
+  });
+
+  it('empty submit does not call fetch', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+    renderWithQuery(<TodoInput />);
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('whitespace-only submit does not call fetch', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+    renderWithQuery(<TodoInput />);
+    await userEvent.type(screen.getByPlaceholderText('Add a task…'), '   ');
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('valid submit calls fetch with trimmed text', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: async () => ({
+        id: 10,
+        text: 'Buy milk',
+        completed: false,
+        createdAt: new Date().toISOString(),
+      }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    renderWithQuery(<TodoInput />);
+    await userEvent.type(screen.getByPlaceholderText('Add a task…'), 'Buy milk');
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        '/api/todos',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ text: 'Buy milk' }),
+        })
+      );
+    });
+  });
+
+  it('input clears after successful submit', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: async () => ({
+        id: 11,
+        text: 'Buy milk',
+        completed: false,
+        createdAt: new Date().toISOString(),
+      }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    renderWithQuery(<TodoInput />);
+    const input = screen.getByPlaceholderText('Add a task…');
+    await userEvent.type(input, 'Buy milk');
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+    await waitFor(() => expect(input).toHaveValue(''));
+  });
+
+  it('character counter appears at 400 chars', () => {
+    renderWithQuery(<TodoInput />);
+    const input = screen.getByPlaceholderText('Add a task…');
+    fireEvent.change(input, { target: { value: 'a'.repeat(400) } });
+    expect(screen.getByText('400/500')).toBeInTheDocument();
+  });
+
+  it('submit button is disabled at 500 chars', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+    renderWithQuery(<TodoInput />);
+    const input = screen.getByPlaceholderText('Add a task…');
+    fireEvent.change(input, { target: { value: 'a'.repeat(500) } });
+    const btn = screen.getByRole('button', { name: 'Add' });
+    expect(btn).toBeDisabled();
+    await userEvent.click(btn);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+});

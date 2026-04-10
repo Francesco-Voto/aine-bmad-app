@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Sintony:wght@400;700&display=swap');
+
+:root {
+  /* Color tokens */
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
+  --color-border-focus: #94a3b8;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #64748b;
+  --color-text-disabled: #94a3b8;
+  --color-accent: #334155;
+  --color-accent-hover: #1e293b;
+  --color-error: #e11d48;
+  --color-error-subtle: #fff1f2;
+
+  /* Typography tokens */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-input: 1rem; /* fixed 16px — prevents iOS Safari zoom */
+
+  /* Spacing tokens */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+}
+
+body {
+  font-family: 'Sintony', 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-size: var(--text-base);
+}
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-border) 25%,
+    #f1f5f9 50%,
+    var(--color-border) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.todo-card {
+  transition: border-color 150ms;
+}
+
+.todo-card:hover {
+  border-color: #cbd5e1; /* slate-300 */
+}
+
+.todo-card .delete-btn {
+  opacity: 0;
+  transition: opacity 150ms;
+}
+
+.todo-card:hover .delete-btn {
+  opacity: 1;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX(6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+.shake {
+  animation: shake 0.35s ease-in-out;
+}
+
+.input-container:focus-within {
+  border-color: var(--color-border-focus);
+}

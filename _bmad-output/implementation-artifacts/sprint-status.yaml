@@ -50,16 +50,16 @@ development_status:
   epic-1-retrospective: done
 
   # Epic 2: Core Frontend Application
-  epic-2: in-progress
-  2-1-frontend-scaffold-design-system-and-component-shell: backlog
-  2-2-todo-api-client-and-data-fetching-hook: backlog
-  2-3-todolist-loading-empty-and-populated-states: backlog
-  2-4-todoitem-display-toggle-and-delete: backlog
-  2-5-todoinput-task-creation: backlog
-  epic-2-retrospective: optional
+  epic-2: done
+  2-1-frontend-scaffold-design-system-and-component-shell: done
+  2-2-todo-api-client-and-data-fetching-hook: done
+  2-3-todolist-loading-empty-and-populated-states: done
+  2-4-todoitem-display-toggle-and-delete: done
+  2-5-todoinput-task-creation: done
+  epic-2-retrospective: done
 
   # Epic 3: Error Handling & Resilience
-  epic-3: backlog
+  epic-3: in-progress
   3-1-inlineerror-component: backlog
   3-2-create-failure-input-preservation-and-retry: backlog
   3-3-toggle-and-delete-failures-item-level-error-and-rollback: backlog
