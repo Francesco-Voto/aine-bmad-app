@@ -9,3 +9,5 @@ test-results/
 server/.env
 server/data/*.db
 
+# Test coverage
+client/coverage

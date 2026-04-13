@@ -8,9 +8,10 @@ import { Checkbox } from './ui/Checkbox';
 
 interface TodoItemProps {
   todo: Todo;
+  onDeleteFocus?: () => void;
 }
 
-const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
+const TodoItem: React.FC<TodoItemProps> = ({ todo, onDeleteFocus }) => {
   const [collapsed, setCollapsed] = React.useState(false);
 
   const { mutate: toggleMutate, isError: toggleIsError } = useToggleTodo();
@@ -23,6 +24,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
   };
 
   const handleDelete = () => {
+    onDeleteFocus?.();
     setCollapsed(true);
     deleteMutate(todo.id, {
       onError: () => setCollapsed(false),
@@ -42,9 +44,8 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
         overflow: 'hidden',
         marginBottom: 0,
         padding: 0,
-        transition: 'opacity 150ms, max-height 200ms ease-out',
       }
-    : { opacity: 1, maxHeight: '200px', transition: 'opacity 150ms, max-height 200ms ease-out' };
+    : { opacity: 1, maxHeight: '200px' };
 
   const textStyle: React.CSSProperties = todo.completed
     ? {
@@ -65,7 +66,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
       };
 
   return (
-    <div style={{ marginBottom: 6 }}>
+    <div className="todo-item" style={{ marginBottom: 6 }}>
       <div
         className="todo-card"
         style={{
@@ -80,11 +81,14 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
         }}
       >
         <Checkbox
+          id={`checkbox-${todo.id}`}
           checked={todo.completed}
           onCheckedChange={handleToggle}
           aria-label={`Complete: ${todo.text}`}
         />
-        <span style={textStyle}>{todo.text}</span>
+        <span className="todo-text" style={textStyle}>
+          {todo.text}
+        </span>
         <button
           className="delete-btn"
           aria-label={`Delete: ${todo.text}`}

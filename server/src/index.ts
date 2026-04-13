@@ -1,17 +1,7 @@
 import { buildApp } from './app';
 
-const PORT = process.env.PORT;
-const DB_PATH = process.env.DB_PATH;
-
-if (!DB_PATH) {
-  console.error('Fatal: DB_PATH environment variable is not set');
-  process.exit(1);
-}
-
-if (!PORT) {
-  console.error('Fatal: PORT environment variable is not set');
-  process.exit(1);
-}
+const PORT = process.env.PORT ?? '3000';
+const DB_PATH = process.env.DB_PATH ?? './data/dev.db';
 
 const app = buildApp({ dbPath: DB_PATH });
 

@@ -79,6 +79,21 @@ describe('TodoList', () => {
     expect(screen.getByRole('button', { name: 'Retry' })).toBeDefined();
   });
 
+  it('aria-busy="true" is on the aria-live container while loading', () => {
+    mockUseTodos.mockReturnValue({
+      isLoading: true,
+      data: undefined,
+      isError: false,
+      error: null,
+    } as unknown as ReturnType<typeof useTodos>);
+
+    const { container } = renderWithQuery(<TodoList />);
+
+    const liveRegion = container.querySelector('[aria-live="polite"]');
+    expect(liveRegion).toBeTruthy();
+    expect(liveRegion?.getAttribute('aria-busy')).toBe('true');
+  });
+
   it('renders the list of todos when data is available', () => {
     mockUseTodos.mockReturnValue({
       isLoading: false,

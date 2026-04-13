@@ -36,7 +36,8 @@ const TodoInput: React.FC = () => {
   return (
     <>
       <form
-        aria-label="Add task form"
+        role="form"
+        aria-label="Add a task"
         className="input-container"
         onSubmit={handleSubmit}
         style={{
@@ -55,6 +56,12 @@ const TodoInput: React.FC = () => {
           name="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              setText('');
+              inputRef.current?.blur();
+            }
+          }}
           placeholder="Add a task…"
           autoFocus
           maxLength={500}
@@ -84,8 +91,6 @@ const TodoInput: React.FC = () => {
           style={{
             flexShrink: 0,
             marginLeft: 'var(--space-2)',
-            opacity: isPending ? 0.5 : 1,
-            cursor: isPending ? 'not-allowed' : 'pointer',
           }}
         >
           Add

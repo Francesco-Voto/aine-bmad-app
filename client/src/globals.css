@@ -56,7 +56,7 @@ body {
 }
 
 .todo-card {
-  transition: border-color 150ms;
+  transition: border-color 150ms, opacity 150ms, max-height 200ms ease-out;
 }
 
 .todo-card:hover {
@@ -70,6 +70,13 @@ body {
 
 .todo-card:hover .delete-btn {
   opacity: 1;
+}
+
+/* Delete button keyboard focus ring — Story 4.2 */
+.delete-btn:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+  opacity: 1;   /* override opacity: 0 at rest so the button is visible when keyboard-focused */
 }
 
 @keyframes shake {
@@ -86,4 +93,59 @@ body {
 
 .input-container:focus-within {
   border-color: var(--color-border-focus);
+}
+
+/* Responsive layout — Story 4.1 */
+.page-layout {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4);   /* mobile base: 375–639px */
+}
+
+@media (min-width: 640px) {
+  .page-layout {
+    padding: var(--space-6);                 /* tablet: 640–1023px */
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-layout {
+    padding: var(--space-8);                 /* desktop: 1024px+ */
+  }
+}
+
+/* Touch device: delete button visible at rest — Story 4.1 (UX-DR10) */
+@media (hover: none) {
+  .todo-card .delete-btn {
+    opacity: 0.45;   /* visible but de-emphasised; full opacity on focus */
+  }
+}
+
+/* Prevent iOS Safari virtual keyboard from obscuring focused input — Story 4.1 (UX-DR12) */
+html {
+  scroll-padding-top: var(--space-8);
+}
+
+/* Todo text toggle transition — Story 4.4 */
+.todo-text {
+  transition: opacity 150ms ease-out, color 150ms ease-out;
+}
+
+/* New item fade-in on mount — Story 4.4 */
+@keyframes todo-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.todo-item {
+  animation: todo-fade-in 150ms ease-out;
+}
+
+/* Reduced motion — Story 4.4 — must be last rule in file */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

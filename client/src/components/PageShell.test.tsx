@@ -30,4 +30,13 @@ describe('PageShell', () => {
     );
     expect(screen.getByRole('button', { name: 'Click me' })).toBeDefined();
   });
+
+  it('applies page-layout class to root div', () => {
+    const { container } = render(
+      <PageShell title="Test">
+        <span>child</span>
+      </PageShell>
+    );
+    expect(container.firstElementChild?.className).toContain('page-layout');
+  });
 });

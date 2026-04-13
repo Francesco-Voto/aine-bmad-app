@@ -5,3 +5,73 @@ The backend will expose a small, well-defined API responsible for persisting and
 From a non-functional standpoint, the system should prioritize simplicity, performance, and maintainability. Interactions should feel instantaneous under normal conditions, and the overall solution should be easy to understand, deploy, and extend by future developers. Basic error handling is expected both client-side and server-side to gracefully handle failures without disrupting the user flow.
 The first version of the application intentionally excludes advanced features such as user accounts, collaboration, task prioritization, deadlines, or notifications. These capabilities may be considered in future iterations, but the initial delivery should remain focused on delivering a clean and reliable core experience.
 Success for this project will be measured by the ability of a user to complete all core task-management actions without guidance, the stability of the application across refreshes and sessions, and the clarity of the overall user experience. The final result should feel like a complete, usable product despite its deliberately minimal scope.
+
+---
+
+## Project Conventions & Dev Agent Rules
+
+### RTL Testing Strategy — Two Established Patterns
+
+Every client component test uses exactly one of these two strategies. Choose based on the component's relationship to server state.
+
+#### Pattern 1: `vi.mock` Hook Strategy
+
+**When to use:** Component only *reads* from a custom hook (`useTodos`, etc.) — no mutations, no `useQueryClient()`.
+
+**Setup:**
+```ts
+import { vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import * as useTodosModule from '../hooks/useTodos';
+
+const mockUseTodos = vi.spyOn(useTodosModule, 'useTodos');
+
+// In each test:
+mockUseTodos.mockReturnValue({ isLoading: false, data: [...], isError: false });
+render(<ComponentUnderTest />);
+```
+
+**Examples:** `TodoList.test.tsx`
+
+**Do NOT use `renderWithQuery`** — not needed because the hook is fully mocked.
+
+---
+
+#### Pattern 2: `renderWithQuery` + Mocked `fetch` Strategy
+
+**When to use:** Component calls a mutation (`useMutation`), OR calls `useQueryClient()`.
+
+**Setup:**
+```ts
+import { renderWithQuery } from '../test-utils'; // or wherever the helper lives
+import { vi } from 'vitest';
+
+// In each test:
+vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce({ ok: true, ... }));
+renderWithQuery(<ComponentUnderTest />);
+```
+
+**Examples:** `TodoItem.test.tsx`, `TodoInput.test.tsx`, `TodoList.test.tsx` (error/retry tests added in Story 3.4)
+
+**CRITICAL:** If a component is refactored to add `useQueryClient()`, ALL existing tests for that component must be updated from bare `render(...)` to `renderWithQuery(...)`. Failing to do so causes a silent "No QueryClient set" error.
+
+---
+
+### `onError` Placement Rule
+
+When using TanStack Query `useMutation`, there are two places to provide an `onError` callback:
+- `useMutation({ onError })` — fires for every failure, safe after component unmount ✅
+- `mutate(vars, { onError })` — fires only for this call; NOT safe after unmount ⚠️
+
+**Rule:** Always use `useMutation({ onError })` for any callback that sets component state (`setState`, `setError`, etc.). Never use `mutate(vars, { onError })` for state-setting.
+
+**References:** `TodoItem.tsx` (toggle/delete onError), `TodoInput.tsx` (create onError)
+
+---
+
+### CSS / Styling Rules
+
+- **No Tailwind class strings in components.** Use inline `style` prop with CSS custom properties: `style={{ color: 'var(--color-error)' }}`.
+- **No hardcoded hex values.** All colors come from tokens defined in `client/src/globals.css` `:root`.
+- **Named exports only.** `export { ComponentName }` — no default exports.
+- **`import * as React from 'react'`** — namespace import in all files.

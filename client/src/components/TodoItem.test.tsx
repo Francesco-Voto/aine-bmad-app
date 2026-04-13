@@ -198,4 +198,20 @@ describe('TodoItem', () => {
     await user.click(screen.getByRole('checkbox', { name: 'Complete: Buy milk' })); // retry
     await waitFor(() => expect(screen.queryByRole('alert')).toBeNull());
   });
+
+  it('calls onDeleteFocus synchronously when the delete button is activated', async () => {
+    const onDeleteFocus = vi.fn();
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({}),
+    } as unknown as Response);
+
+    renderWithQuery(<TodoItem todo={activeTodo} onDeleteFocus={onDeleteFocus} />);
+    const deleteBtn = screen.getByRole('button', { name: /Delete:/i });
+
+    await userEvent.click(deleteBtn);
+
+    expect(onDeleteFocus).toHaveBeenCalledTimes(1);
+  });
 });

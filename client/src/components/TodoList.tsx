@@ -12,9 +12,9 @@ const TodoList: React.FC = () => {
   const queryClient = useQueryClient();
 
   return (
-    <div aria-live="polite">
+    <div aria-live="polite" aria-busy={isLoading || undefined}>
       {isLoading && (
-        <div aria-busy="true" aria-label="Loading tasks">
+        <div role="status" aria-label="Loading tasks">
           {[0, 1, 2].map((i) => (
             <div
               key={i}
@@ -75,9 +75,20 @@ const TodoList: React.FC = () => {
             TASKS
           </p>
           <ul role="list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {data.map((todo: Todo) => (
+            {data.map((todo: Todo, index: number) => (
               <li key={todo.id} role="listitem">
-                <TodoItem todo={todo} />
+                <TodoItem
+                  todo={todo}
+                  onDeleteFocus={() => {
+                    const remaining = data.filter((t) => t.id !== todo.id);
+                    if (remaining.length === 0) {
+                      document.getElementById('todo-input')?.focus();
+                    } else {
+                      const nextTodo = remaining[index] ?? remaining[remaining.length - 1];
+                      document.getElementById(`checkbox-${nextTodo.id}`)?.focus();
+                    }
+                  }}
+                />
               </li>
             ))}
           </ul>

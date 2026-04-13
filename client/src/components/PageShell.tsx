@@ -7,13 +7,7 @@ interface PageShellProps {
 
 const PageShell: React.FC<PageShellProps> = ({ title, children }) => {
   return (
-    <div
-      style={{
-        maxWidth: 560,
-        margin: '0 auto',
-        padding: 'var(--space-8) var(--space-4)',
-      }}
-    >
+    <div className="page-layout">
       <h1
         style={{
           fontSize: 'var(--text-lg)',
@@ -33,7 +27,7 @@ const PageShell: React.FC<PageShellProps> = ({ title, children }) => {
         role="separator"
         aria-hidden="true"
       />
-      {children}
+      <main>{children}</main>
     </div>
   );
 };

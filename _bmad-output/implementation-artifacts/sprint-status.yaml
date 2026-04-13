@@ -59,21 +59,26 @@ development_status:
   epic-2-retrospective: done
 
   # Epic 3: Error Handling & Resilience
-  epic-3: in-progress
+  epic-3: done
   3-1-inlineerror-component: done
   3-2-create-failure-input-preservation-and-retry: done
   3-3-toggle-and-delete-failures-item-level-error-and-rollback: done
   3-4-list-load-failure-and-retry: done
   3-5-e2e-test-suite: done
-  epic-3-retrospective: optional
+  epic-3-retrospective: done
 
   # Epic 4: Responsive Design & Accessibility
-  epic-4: backlog
-  4-1-responsive-layout: backlog
-  4-2-keyboard-navigation-and-focus-management: backlog
-  4-3-full-aria-implementation-and-accessibility-audit: backlog
-  4-4-animations-transitions-and-polish: backlog
-  epic-4-retrospective: optional
+  # Pre-Epic 4 tasks (must complete before Story 4.1 is created):
+  pre-4-fix-server-dev-exit-code: done
+  pre-4-fix-form-aria-label: done
+  pre-4-install-vitest-coverage: done
+  pre-4-update-project-context-test-patterns: done
+  epic-4: done
+  4-1-responsive-layout: done
+  4-2-keyboard-navigation-and-focus-management: done
+  4-3-full-aria-implementation-and-accessibility-audit: done
+  4-4-animations-transitions-and-polish: done
+  epic-4-retrospective: done
 
   # Epic 5: Containerization & Production Readiness
   epic-5: backlog

@@ -2,7 +2,7 @@
 
 exports[`PageShell > matches snapshot 1`] = `
 <div
-  style="max-width: 560px; margin: 0px auto; padding: var(--space-8) var(--space-4);"
+  class="page-layout"
 >
   <h1
     style="font-size: var(--text-lg); font-weight: 500; margin: 0 0 var(--space-4) 0; color: var(--color-text-primary);"
@@ -14,8 +14,10 @@ exports[`PageShell > matches snapshot 1`] = `
     role="separator"
     style="height: 1px; background: var(--color-border); margin-bottom: var(--space-4);"
   />
-  <p>
-    Child content
-  </p>
+  <main>
+    <p>
+      Child content
+    </p>
+  </main>
 </div>
 `;

@@ -13,6 +13,7 @@
     "test:server": "npm run test --workspace=server",
     "test": "npm run test:client && npm run test:server",
     "test:e2e": "playwright test --pass-with-no-tests",
+    "test:coverage": "npm run test:coverage --workspace=client",
     "test:all": "npm run test && npm run test:e2e"
   },
   "devDependencies": {

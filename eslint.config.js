@@ -2,7 +2,7 @@ import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['**/dist/**', '**/node_modules/**', '**/build/**'] },
+  { ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**', '**/build/**'] },
   {
     extends: [...tseslint.configs.recommended],
     files: ['client/src/**/*.{ts,tsx}', 'server/src/**/*.ts'],

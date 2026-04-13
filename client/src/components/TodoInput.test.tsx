@@ -157,4 +157,49 @@ describe('TodoInput', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Add' })); // retry
     await waitFor(() => expect(screen.queryByRole('alert')).toBeNull());
   });
+
+  it('submit button is disabled while mutation is pending', async () => {
+    // fetch never resolves → mutation stays in isPending state
+    const fetchMock = vi.fn().mockReturnValue(new Promise(() => {}));
+    vi.stubGlobal('fetch', fetchMock);
+
+    renderWithQuery(<TodoInput />);
+    const input = screen.getByPlaceholderText('Add a task…');
+    const button = screen.getByRole('button', { name: 'Add' });
+
+    await userEvent.type(input, 'Buy milk');
+    await userEvent.click(button);
+
+    // After click the mutation fires; button should become disabled
+    await waitFor(() => {
+      expect(button).toBeDisabled();
+    });
+  });
+
+  it('form has role="form" and aria-label="Add a task"', () => {
+    renderWithQuery(<TodoInput />);
+    const form = screen.getByRole('form', { name: 'Add a task' });
+    expect(form).toBeDefined();
+  });
+
+  it('Escape clears a non-empty input and removes focus', async () => {
+    renderWithQuery(<TodoInput />);
+    const input = screen.getByPlaceholderText('Add a task…');
+    await userEvent.type(input, 'hello');
+    expect(input).toHaveValue('hello');
+
+    await userEvent.keyboard('{Escape}');
+
+    expect(input).toHaveValue('');
+    expect(document.activeElement).not.toBe(input);
+  });
+
+  it('Escape on empty input removes focus without error', async () => {
+    renderWithQuery(<TodoInput />);
+    const input = screen.getByPlaceholderText('Add a task…');
+    await userEvent.keyboard('{Escape}');
+
+    expect(input).toHaveValue('');
+    expect(document.activeElement).not.toBe(input);
+  });
 });
