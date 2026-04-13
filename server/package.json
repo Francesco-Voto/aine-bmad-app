@@ -9,7 +9,11 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "jest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "docker:up": "npm run docker:up --prefix ..",
+    "docker:up:build": "npm run docker:up:build --prefix ..",
+    "docker:down": "npm run docker:down --prefix ..",
+    "docker:logs": "npm run docker:logs --prefix .."
   },
   "keywords": [],
   "author": "",

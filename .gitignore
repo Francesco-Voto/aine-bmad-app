@@ -6,8 +6,10 @@ test-results/
 .playwright/
 
 # Environment files
+.env
 server/.env
 server/data/*.db
+data/*.db
 
 # Test coverage
 client/coverage

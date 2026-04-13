@@ -1,0 +1,8 @@
+# docker-compose.override.yml
+# Automatically merged with docker-compose.yml on `docker compose up`
+# Provides dev-environment defaults (NODE_ENV=development, separate DB)
+services:
+  server:
+    environment:
+      NODE_ENV: development
+      DB_PATH: /app/data/dev.db

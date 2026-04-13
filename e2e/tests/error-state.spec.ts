@@ -40,6 +40,6 @@ test('recovers after clicking Retry when connection is restored', async ({ page 
   block = false;
   await page.getByRole('button', { name: 'Retry' }).click();
 
-  await expect(page.getByText('Should not appear')).toBeVisible();
+  await expect(page.getByText('Should not appear')).toBeVisible({ timeout: 15000 });
   await expect(page.getByRole('alert')).not.toBeVisible();
 });

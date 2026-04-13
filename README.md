@@ -14,11 +14,16 @@ todo-app/
 
 ## Quick Start
 
-> **Note:** Docker files are added in Epic 5. Once available, the one-command setup will be:
->
-> ```bash
-> docker-compose up
-> ```
+```bash
+docker compose up --build   # first run — builds images
+docker compose up           # subsequent runs — uses cached images
+```
+
+This starts:
+- **Frontend** at http://localhost (port 80, Nginx)
+- **Backend** at http://localhost:3000 (port 3000, Node.js)
+
+The `docker-compose.override.yml` is auto-merged, setting `NODE_ENV=development` and a dedicated `dev.db`.
 
 ## Development
 
@@ -63,3 +68,60 @@ Starts the Fastify API (port configured via env).
 | `npm run test:server` | Run Jest tests in `server/`         |
 | `npm run test:e2e`    | Run Playwright E2E tests            |
 | `npm run test:all`    | Run all tests (unit + E2E)          |
+| `npm run docker:up`   | Start Docker stack (detached)       |
+| `npm run docker:up:build` | Rebuild images then start       |
+| `npm run docker:down` | Stop and remove containers          |
+| `npm run docker:logs` | Tail logs from all services         |
+
+## Docker
+
+### Prerequisites
+
+- Docker Engine 24+
+- Docker Compose v2 (`docker compose` or `docker-compose`)
+
+### Local development (default)
+
+```bash
+docker compose up --build   # first run
+docker compose up           # subsequent runs
+```
+
+`docker-compose.override.yml` is automatically merged — sets `NODE_ENV=development` and `DB_PATH=/app/data/dev.db`.
+
+### Production-only configuration
+
+```bash
+docker compose -f docker-compose.yml up
+```
+
+Uses the base `docker-compose.yml` only (no override). `NODE_ENV=production`, `DB_PATH=/app/data/todos.db`.
+
+### Test environment
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.test.yml up -d --build
+```
+
+Uses a separate SQLite database (`test.db`) in an isolated volume — no data leakage from dev or production.
+
+### Environment variables
+
+All values are overridable via `.env` or shell env vars:
+
+| Variable | Default | Description |
+|---|---|---|
+| `PORT` | `3000` | Backend server port (inside container) |
+| `DB_PATH` | `/app/data/todos.db` | SQLite database path (inside container) |
+| `NODE_ENV` | `production` | Node environment |
+| `CLIENT_PORT` | `80` | Host port mapped to frontend container |
+| `SERVER_PORT` | `3000` | Host port mapped to backend container |
+
+### Useful commands
+
+```bash
+docker compose logs server          # backend logs
+docker compose logs client          # nginx logs
+docker compose down                 # stop and remove containers (volume persists)
+docker compose down -v              # stop + remove containers and volumes (destroys DB)
+```
