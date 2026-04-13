@@ -52,7 +52,6 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onDeleteFocus }) => {
         flex: 1,
         fontSize: 'var(--text-base)',
         textDecoration: 'line-through',
-        opacity: 0.6,
         color: 'var(--color-text-disabled)',
         wordBreak: 'break-word',
         overflowWrap: 'anywhere',

@@ -55,7 +55,6 @@ describe('TodoItem', () => {
 
     const text = screen.getByText('Walk dog');
     expect(text.style.textDecoration).toBe('line-through');
-    expect(text.style.opacity).toBe('0.6');
     expect(text.style.color).toBe('var(--color-text-disabled)');
   });
 

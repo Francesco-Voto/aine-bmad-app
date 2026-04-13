@@ -199,6 +199,28 @@ describe('PATCH /api/todos/:id', () => {
     expect(res.statusCode).toBe(404);
     expect(res.json()).toHaveProperty('message');
   });
+
+  it('returns 400 for non-boolean completed value', async () => {
+    const res = await app.inject({
+      method: 'PATCH',
+      url: `/api/todos/${todoId}`,
+      headers: { 'content-type': 'application/json' },
+      payload: JSON.stringify({ completed: 'yes' }),
+    });
+    expect(res.statusCode).toBe(400);
+    expect(res.json()).toHaveProperty('message');
+  });
+
+  it('returns 400 for missing completed field', async () => {
+    const res = await app.inject({
+      method: 'PATCH',
+      url: `/api/todos/${todoId}`,
+      headers: { 'content-type': 'application/json' },
+      payload: JSON.stringify({}),
+    });
+    expect(res.statusCode).toBe(400);
+    expect(res.json()).toHaveProperty('message');
+  });
 });
 
 // ─── DELETE /api/todos/:id ────────────────────────────────────────────────────

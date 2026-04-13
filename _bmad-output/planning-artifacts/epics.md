@@ -1014,3 +1014,111 @@ So that I can run the full stack locally or in CI without environment leakage.
 **Given** the `README.md`,
 **When** it is read,
 **Then** it documents all available profiles and confirms `docker-compose up` as the single-command setup
+
+---
+
+## Epic 6: QA, Performance & Security
+
+The application is audited for test coverage gaps, runtime performance, accessibility compliance, and common security vulnerabilities. All findings are documented with remediations applied or tracked.
+
+### Story 6.1: Test Coverage Analysis & Gap Remediation
+
+As a developer,
+I want AI-assisted analysis of the current test suite and coverage report,
+So that meaningful coverage gaps are identified and remediated to reach ≥ 70% coverage.
+
+**Acceptance Criteria:**
+
+**Given** `npm run test:coverage` is run in the `client/` workspace,
+**When** the v8 coverage report is generated,
+**Then** a coverage summary showing per-file line/branch/function coverage is produced in `client/coverage/`
+
+**Given** the coverage report and AI analysis of `client/src/**`,
+**When** gaps are identified,
+**Then** a written gap analysis lists each under-covered file, the type of gap (branch, line, function), and the reason it matters
+
+**Given** the gap analysis,
+**When** new or extended tests are written,
+**Then** overall meaningful coverage reaches ≥ 70% across statements, branches, and functions for the `client/` codebase
+
+**Given** server-side test coverage (`server/`),
+**When** existing Jest tests are reviewed,
+**Then** all CRUD endpoints and the health check have at least one happy-path and one error-path test
+
+---
+
+### Story 6.2: Performance Testing & Analysis
+
+As a developer,
+I want the running application profiled for performance bottlenecks,
+So that any rendering or network issues are documented and resolved before delivery.
+
+**Acceptance Criteria:**
+
+**Given** the full-stack Docker environment is running (`npm run docker:up`),
+**When** Chrome DevTools MCP Performance panel traces a full page load and a create-todo interaction,
+**Then** a written performance report documents: LCP, FID/INP, CLS, JS bundle size, and any long tasks (>50ms)
+
+**Given** the Lighthouse audit run against `http://localhost`,
+**When** Performance, Best Practices, and SEO categories are scored,
+**Then** each score is ≥ 80; any score below 80 has a documented remediation
+
+**Given** the performance report findings,
+**When** any critical issues (LCP > 2.5s, CLS > 0.1, or long tasks in the main thread) are found,
+**Then** they are remediated and the audit is re-run to confirm improvement
+
+---
+
+### Story 6.3: Accessibility Audit (WCAG AA)
+
+As a developer,
+I want an automated and manual accessibility audit of the full application,
+So that WCAG 2.1 AA compliance is verified and any violations are documented and fixed.
+
+**Acceptance Criteria:**
+
+**Given** the Lighthouse accessibility audit run against `http://localhost`,
+**When** the audit completes,
+**Then** the score is ≥ 95; all violations are listed with their WCAG criterion and fix
+
+**Given** axe-core integrated into the Playwright E2E suite (via `@axe-core/playwright`),
+**When** `npx playwright test --config=playwright.docker.config.ts` is run,
+**Then** at least one spec injects axe and asserts zero violations on the main page, the populated list state, and the error state
+
+**Given** the full accessibility tree inspection (Chrome DevTools MCP),
+**When** the live app is inspected,
+**Then** the accessibility tree confirms: one `<h1>`, `role="form"` on the add form, `aria-live="polite"` on the list container, correct `aria-label` on all interactive elements
+
+**Given** any violations found during audit,
+**When** fixes are applied,
+**Then** the Lighthouse score returns ≥ 95 and axe reports zero violations
+
+---
+
+### Story 6.4: Security Review
+
+As a developer,
+I want an AI-assisted security review of the full codebase,
+So that common vulnerabilities (XSS, injection, insecure headers, etc.) are identified, documented, and remediated.
+
+**Acceptance Criteria:**
+
+**Given** AI analysis of `server/src/**` and `client/src/**`,
+**When** the review is complete,
+**Then** a written security findings report covers: input validation, SQL injection surface, XSS vectors, HTTP response headers, dependency vulnerabilities (`npm audit`), and secrets exposure risk
+
+**Given** `npm audit` run at the monorepo root,
+**When** the output is reviewed,
+**Then** all critical and high severity advisories are resolved or explicitly accepted with documented rationale
+
+**Given** the server API (`POST /api/todos`, `PATCH /api/todos/:id`),
+**When** input validation is reviewed,
+**Then** request body size limits, text field length enforcement, and type validation are confirmed present; any gaps are remediated
+
+**Given** the Nginx configuration,
+**When** HTTP response headers are reviewed,
+**Then** `X-Content-Type-Options`, `X-Frame-Options`, and `Referrer-Policy` headers are present in responses; missing headers are added to `nginx.conf`
+
+**Given** the findings report,
+**When** all critical and high items are remediated,
+**Then** a re-run of `npm audit` and a re-review of the fixed code confirms the issues are resolved

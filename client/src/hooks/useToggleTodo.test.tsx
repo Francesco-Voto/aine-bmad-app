@@ -121,4 +121,23 @@ describe('useToggleTodo', () => {
 
     expect(qc.getQueryData(['todos'])).toEqual(existing);
   });
+
+  it('does not throw when onError fires with no prior cached data', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      json: async () => ({ message: 'fail' }),
+    } as unknown as Response);
+
+    // No setQueryData — cache is empty so context.previous will be undefined
+    const { wrapper } = makeWrapper();
+    const { result } = renderHook(() => useToggleTodo(), { wrapper });
+
+    act(() => {
+      result.current.mutate({ id: 1, completed: true });
+    });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    // If we reach here without throwing, the nullish guard on context.previous worked
+  });
 });

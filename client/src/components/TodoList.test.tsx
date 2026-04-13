@@ -2,12 +2,26 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { useTodos } from '../hooks/useTodos';
 import { TodoList } from './TodoList';
 
 vi.mock('../hooks/useTodos');
+vi.mock('./TodoItem', () => ({
+  TodoItem: ({
+    todo,
+    onDeleteFocus,
+  }: {
+    todo: { id: number; text: string };
+    onDeleteFocus?: () => void;
+  }) => (
+    <div>
+      {todo.text}
+      <button onClick={onDeleteFocus}>trigger-focus</button>
+    </div>
+  ),
+}));
 
 const mockUseTodos = vi.mocked(useTodos);
 
@@ -112,5 +126,53 @@ describe('TodoList', () => {
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
     expect(screen.getByText('First task')).toBeDefined();
     expect(screen.getByText('Second task')).toBeDefined();
+  });
+});
+
+describe('TodoList — onDeleteFocus callback', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('focuses #todo-input when the last todo is deleted', async () => {
+    mockUseTodos.mockReturnValue({
+      isLoading: false,
+      isError: false,
+      data: [{ id: 1, text: 'Only task', completed: false, createdAt: '2026-01-01T00:00:00.000Z' }],
+      error: null,
+    } as unknown as ReturnType<typeof useTodos>);
+
+    const focusSpy = vi.fn();
+    vi.spyOn(document, 'getElementById').mockImplementation((id) =>
+      id === 'todo-input' ? ({ focus: focusSpy } as unknown as HTMLElement) : null
+    );
+
+    const { getByRole } = renderWithQuery(<TodoList />);
+    await userEvent.click(getByRole('button', { name: 'trigger-focus' }));
+
+    expect(focusSpy).toHaveBeenCalledOnce();
+  });
+
+  it('focuses the next todo checkbox when a todo is deleted from a multi-item list', async () => {
+    mockUseTodos.mockReturnValue({
+      isLoading: false,
+      isError: false,
+      data: [
+        { id: 1, text: 'Task A', completed: false, createdAt: '2026-01-01T00:00:00.000Z' },
+        { id: 2, text: 'Task B', completed: false, createdAt: '2026-01-02T00:00:00.000Z' },
+      ],
+      error: null,
+    } as unknown as ReturnType<typeof useTodos>);
+
+    // Deleting index-0 (id=1): remaining=[id=2], nextTodo=remaining[0]=id=2 → focus checkbox-2
+    const focusSpy = vi.fn();
+    vi.spyOn(document, 'getElementById').mockImplementation((id) =>
+      id === 'checkbox-2' ? ({ focus: focusSpy } as unknown as HTMLElement) : null
+    );
+
+    const { getAllByRole } = renderWithQuery(<TodoList />);
+    await userEvent.click(getAllByRole('button', { name: 'trigger-focus' })[0]);
+
+    expect(focusSpy).toHaveBeenCalledOnce();
   });
 });

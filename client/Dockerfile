@@ -12,6 +12,7 @@ COPY client/package.json ./client/package.json
 RUN npm ci -w client
 
 # Copy client source and build configs
+COPY client/public/ ./client/public/
 COPY client/index.html ./client/index.html
 COPY client/vite.config.ts ./client/vite.config.ts
 COPY client/tsconfig.json ./client/tsconfig.json
