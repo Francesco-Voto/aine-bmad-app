@@ -337,12 +337,12 @@ Note: `waitFor` is needed because React's mutation state update is asynchronous 
 After Tasks 1–7 are complete and the dev server is running:
 
 1. **Performance trace of delete collapse:**
-   - Use `mcp_chrome-devtoo_performance_start_trace` + trigger a delete + `mcp_chrome-devtoo_performance_stop_trace`
-   - Use `mcp_chrome-devtoo_performance_analyze_insight` to confirm no layout thrash (the `max-height` + `opacity` combo should composite without layout reflow if `will-change` is needed)
+   - Use `mcp_chrome-devtool_performance_start_trace` + trigger a delete + `mcp_chrome-devtool_performance_stop_trace`
+   - Use `mcp_chrome-devtool_performance_analyze_insight` to confirm no layout thrash (the `max-height` + `opacity` combo should composite without layout reflow if `will-change` is needed)
 
 2. **`prefers-reduced-motion` emulation:**
-   - Use `mcp_chrome-devtoo_emulate` with reduced-motion setting (or inject CSS via `mcp_chrome-devtoo_evaluate_script`)
-   - Use `mcp_chrome-devtoo_take_screenshot` to confirm no visible animation
+   - Use `mcp_chrome-devtool_emulate` with reduced-motion setting (or inject CSS via `mcp_chrome-devtool_evaluate_script`)
+   - Use `mcp_chrome-devtool_take_screenshot` to confirm no visible animation
 
 ---
 

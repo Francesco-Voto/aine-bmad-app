@@ -209,10 +209,10 @@ This task is a **verification step**, not a code change. Run the Lighthouse audi
 
 **Steps:**
 1. Ensure both dev servers are running (`npm run dev` in `server/` and `client/`)
-2. Use `mcp_chrome-devtoo_lighthouse_audit` with `url: "http://localhost:5173"` and include the `accessibility` category
+2. Use `mcp_chrome-devtool_lighthouse_audit` with `url: "http://localhost:5173"` and include the `accessibility` category
 3. Target score: **≥ 95**
 
-**Accessibility tree verification (using `mcp_chrome-devtoo_take_snapshot`):**
+**Accessibility tree verification (using `mcp_chrome-devtool_take_snapshot`):**
 
 Confirm in the AT snapshot:
 - Form: `role=form name="Add a task"` is present

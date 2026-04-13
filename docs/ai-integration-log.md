@@ -55,7 +55,7 @@ When context window pressure was high, explicitly adding:
 
 Several MCP servers were active throughout the project. Each served a distinct purpose.
 
-### `mcp_chrome-devtoo` (Chrome DevTools MCP)
+### `mcp_chrome-devtooll` (Chrome DevTools MCP)
 
 Used extensively during **Epic 6 (Quality Assurance)**.
 

@@ -59,7 +59,7 @@ npm run docker:up:build
 
 ### Task 2: Run Lighthouse audit via Chrome DevTools MCP (AC: 1, 2)
 
-Use the `mcp_chrome-devtoo_lighthouse_audit` tool targeting `http://localhost`.
+Use the `mcp_chrome-devtool_lighthouse_audit` tool targeting `http://localhost`.
 
 Record scores in dev notes. For any score < 80, identify the specific failing audits and apply fixes:
 - Missing `<meta name="description">` → add to `client/index.html`
@@ -70,11 +70,11 @@ Re-run Lighthouse after fixes to confirm improvement.
 
 ### Task 3: Performance trace via Chrome DevTools MCP (AC: 3)
 
-Use `mcp_chrome-devtoo_performance_start_trace` / `mcp_chrome-devtoo_performance_stop_trace`:
+Use `mcp_chrome-devtool_performance_start_trace` / `mcp_chrome-devtool_performance_stop_trace`:
 1. Trace page load at `http://localhost`
 2. Trace a create-todo interaction (type text, press Enter)
 
-Use `mcp_chrome-devtoo_performance_analyze_insight` to identify long tasks and main-thread blocking.
+Use `mcp_chrome-devtool_performance_analyze_insight` to identify long tasks and main-thread blocking.
 
 ### Task 4: Check bundle size (AC: 4)
 

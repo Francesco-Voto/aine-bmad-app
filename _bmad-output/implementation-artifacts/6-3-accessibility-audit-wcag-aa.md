@@ -28,16 +28,16 @@ Epic 4 fully delivered WCAG AA compliance as its primary goal. The following wor
 
 - **Automated** axe-core scan integrated into the E2E suite (so it runs every CI pass)
 - Re-running Lighthouse via Chrome DevTools MCP to produce a fresh machine-readable score against the Docker production stack
-- Inspecting the accessibility tree via `mcp_chrome-devtoo_take_snapshot` to catch any structural issues not surfaced by axe
+- Inspecting the accessibility tree via `mcp_chrome-devtool_take_snapshot` to catch any structural issues not surfaced by axe
 - Documenting every finding (even minor) in the dev notes table below
 
 ### Tooling
 
 | Tool | Purpose |
 |---|---|
-| `mcp_chrome-devtoo_lighthouse_audit` | Overall Lighthouse Accessibility score |
+| `mcp_chrome-devtool_lighthouse_audit` | Overall Lighthouse Accessibility score |
 | `@axe-core/playwright` npm package | Programmatic axe scan inside Playwright spec |
-| `mcp_chrome-devtoo_take_snapshot` | Inspect live accessibility tree |
+| `mcp_chrome-devtool_take_snapshot` | Inspect live accessibility tree |
 | Playwright `playwright.docker.config.ts` | Target: `http://localhost` (Docker stack) |
 
 ### Test Environment
@@ -52,7 +52,7 @@ Accessibility testing runs against the **Docker production stack** (`npm run doc
 
 2. **Given** `@axe-core/playwright` is installed in `e2e/`, **When** an axe scan runs against the main page in three states — empty list, populated list, and error state — **Then** zero violations with impact `serious` or `critical` are reported; all findings are recorded in dev notes.
 
-3. **Given** the accessibility tree snapshot from `mcp_chrome-devtoo_take_snapshot`, **When** the snapshot is reviewed for landmark structure, list semantics, and button roles, **Then** the structure matches expectations (one `<main>`, `<ul>` for todo list, `<button>` for each action); any deviation is documented and fixed.
+3. **Given** the accessibility tree snapshot from `mcp_chrome-devtool_take_snapshot`, **When** the snapshot is reviewed for landmark structure, list semantics, and button roles, **Then** the structure matches expectations (one `<main>`, `<ul>` for todo list, `<button>` for each action); any deviation is documented and fixed.
 
 4. **Given** any axe violation is found, **When** a remediation is applied, **Then** the axe scan is re-run and confirms zero violations before the story is marked done.
 
@@ -76,7 +76,7 @@ import AxeBuilder from '@axe-core/playwright';
 ### Task 2: Run Lighthouse accessibility audit via Chrome DevTools MCP (AC: 1)
 
 1. Ensure Docker stack is running: `npm run docker:up:build`
-2. Use `mcp_chrome-devtoo_lighthouse_audit` targeting `http://localhost`
+2. Use `mcp_chrome-devtool_lighthouse_audit` targeting `http://localhost`
 3. Record the Accessibility score in dev notes below
 4. Note any failing audits (e.g. missing `lang` attribute, colour contrast warnings, missing `alt` text)
 5. Apply fixes for any failing audit; re-run to confirm ≥ 95
@@ -124,7 +124,7 @@ npx playwright test e2e/tests/accessibility.spec.ts --config=playwright.docker.c
 
 ### Task 4: Inspect accessibility tree via Chrome DevTools MCP (AC: 3)
 
-Use `mcp_chrome-devtoo_take_snapshot` on `http://localhost` (populated state).
+Use `mcp_chrome-devtool_take_snapshot` on `http://localhost` (populated state).
 
 Review the returned accessibility tree for:
 - One `<main>` landmark
