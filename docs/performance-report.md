@@ -7,7 +7,7 @@
 
 ---
 
-## Lighthouse Scores (final, post-remediation)
+## Lighthouse Scores
 
 | Category | Score | Target | Pass? |
 |---|---|---|---|
